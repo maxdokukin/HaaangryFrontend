@@ -49,8 +49,23 @@ struct VideoFeedView: View {
             }
         }
         .preferredColorScheme(.dark)
-        .onChange(of: currentIndex) { _ in preloadAroundCurrent() }
-        .onAppear { preloadAroundCurrent() }
+        .onChange(of: currentIndex) { _ in
+            preloadAroundCurrent()
+            playCurrent()
+        }
+        .onAppear {
+            preloadAroundCurrent()
+            playCurrent()
+        }
+    }
+
+    private func playCurrent() {
+        guard feed.videos.indices.contains(currentIndex) else { return }
+        let v = feed.videos[currentIndex]
+        guard let url = URL(string: v.url) else { return }
+        // Ensure only the active one plays
+        pool.pauseAll()
+        _ = pool.play(id: v.id, url: url, muted: true)
     }
 
     private func preloadAroundCurrent() {
@@ -63,6 +78,7 @@ struct VideoFeedView: View {
             return v.id
         }
         pool.trim(keep: Set(idsToKeep))
+        pool.pauseAll(except: Set([feed.videos[currentIndex].id]))
     }
 }
 
@@ -83,7 +99,6 @@ struct VideoCardView: View {
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
-
             if let player {
                 TikTokPlayerView(player: player, isMuted: isMuted)
                     .ignoresSafeArea()
@@ -132,6 +147,7 @@ struct VideoCardView: View {
         }
         .onAppear {
             if let url = URL(string: video.url) {
+                // Reuse or create player now so FeedView can start it immediately
                 player = pool.player(for: video.id, url: url, muted: isMuted)
             }
             syncPlayback()

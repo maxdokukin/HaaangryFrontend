@@ -12,13 +12,25 @@ final class PlayerPool: ObservableObject {
         let item = AVPlayerItem(url: url)
         let p = AVPlayer(playerItem: item)
         p.actionAtItemEnd = .none
+        p.automaticallyWaitsToMinimizeStalling = false
+        p.allowsExternalPlayback = false
         p.isMuted = muted
         players[id] = p
         return p
     }
 
-    func warm(id: String, url: URL) {
-        _ = player(for: id, url: url, muted: true)
+    func warm(id: String, url: URL) { _ = player(for: id, url: url, muted: true) }
+
+    func play(id: String, url: URL, muted: Bool) -> AVPlayer {
+        let p = player(for: id, url: url, muted: muted)
+        p.play()
+        return p
+    }
+
+    func pauseAll() { players.values.forEach { $0.pause() } }
+
+    func pauseAll(except ids: Set<String>) {
+        for (k, v) in players where !ids.contains(k) { v.pause() }
     }
 
     func trim(keep ids: Set<String>) {
@@ -27,6 +39,4 @@ final class PlayerPool: ObservableObject {
             players.removeValue(forKey: key)
         }
     }
-
-    func pauseAll() { players.values.forEach { $0.pause() } }
 }
