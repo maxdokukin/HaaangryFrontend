@@ -7,7 +7,7 @@ struct OrderOptionsSheet: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            if let opts = orders.orderOptions {
+            if let opts = orders.orderOptions, opts.video_id == videoId {
                 Text("You’re craving: \(opts.intent)").font(.title3).padding(.bottom, 8)
                 Text("Top Restaurants").font(.headline)
                 ScrollView(.horizontal, showsIndicators: false) {
@@ -15,14 +15,15 @@ struct OrderOptionsSheet: View {
                         ForEach(opts.top_restaurants) { r in
                             Button {
                                 orders.selectedRestaurant = r
+                                orders.recalcTotals()
                             } label: {
                                 VStack {
                                     Text(r.name).bold()
                                     Text("ETA \(r.delivery_eta_min)-\(r.delivery_eta_max) min").font(.caption)
                                 }
-                                .padding().background(
-                                    r.id == orders.selectedRestaurant?.id ? Color.gray.opacity(0.3) : Color.clear
-                                ).cornerRadius(8)
+                                .padding()
+                                .background(r.id == orders.selectedRestaurant?.id ? Color.gray.opacity(0.3) : Color.clear)
+                                .cornerRadius(8)
                             }
                         }
                     }.padding(.vertical, 6)
@@ -47,9 +48,7 @@ struct OrderOptionsSheet: View {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack {
                             ForEach(opts.suggested_items) { m in
-                                Button {
-                                    orders.addSuggested(m)
-                                } label: {
+                                Button { orders.addSuggested(m) } label: {
                                     VStack(alignment: .leading) {
                                         Text(m.name).bold()
                                         Text(price(m.price_cents))
@@ -82,13 +81,28 @@ struct OrderOptionsSheet: View {
                         .cornerRadius(10)
                 }.padding(.top, 8)
             } else {
-                ProgressView().task { await orders.fetchOptions(for: videoId) }
+                // Loading state while fetch runs
+                HStack { Spacer(); ProgressView(); Spacer() }
             }
         }
         .padding()
+        // Ensure fetch always runs when the sheet appears for a video.
+        .task(id: videoId) {
+            await orders.fetchOptions(for: videoId, force: true)
+        }
     }
 
     private func price(_ cents: Int) -> String {
         String(format: "$%.2f", Double(cents)/100.0)
+    }
+}
+
+// expose recalcTotals for the local button to call without duplicating logic
+private extension OrderStore {
+    func recalcTotals() {
+        let subtotal = currentCart.reduce(0) { $0 + $1.price_cents_snapshot * $1.quantity }
+        let fee = selectedRestaurant?.delivery_fee_cents ?? 299
+        totalCents = subtotal + fee
+        etaMinutes = 30
     }
 }

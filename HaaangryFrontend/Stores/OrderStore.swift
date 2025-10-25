@@ -9,7 +9,17 @@ final class OrderStore: ObservableObject {
     @Published var etaMinutes: Int = 0
     @Published var totalCents: Int = 0
 
-    func fetchOptions(for videoId: String) async {
+    /// Always safe to call. Clears stale state when video changes.
+    func fetchOptions(for videoId: String, force: Bool = false) async {
+        if force || orderOptions?.video_id != videoId {
+            // Reset UI while loading new video’s options
+            self.orderOptions = nil
+            self.currentCart = []
+            self.selectedRestaurant = nil
+            self.etaMinutes = 0
+            self.totalCents = 0
+        }
+
         if let opts: OrderOptions = await APIClient.shared.request(.orderOptions(videoId: videoId), fallback: .orderOptionsV1) {
             self.orderOptions = opts
             self.currentCart = opts.prefill
@@ -24,12 +34,19 @@ final class OrderStore: ObservableObject {
         recalcTotals()
     }
 
-    func inc(_ id: String) { if let idx = currentCart.firstIndex(where: {$0.menu_item_id == id}) {
-        currentCart[idx].quantity += 1; recalcTotals()
-    }}
-    func dec(_ id: String) { if let idx = currentCart.firstIndex(where: {$0.menu_item_id == id}) {
-        currentCart[idx].quantity = max(1, currentCart[idx].quantity - 1); recalcTotals()
-    }}
+    func inc(_ id: String) {
+        if let idx = currentCart.firstIndex(where: { $0.menu_item_id == id }) {
+            currentCart[idx].quantity += 1
+            recalcTotals()
+        }
+    }
+
+    func dec(_ id: String) {
+        if let idx = currentCart.firstIndex(where: { $0.menu_item_id == id }) {
+            currentCart[idx].quantity = max(1, currentCart[idx].quantity - 1)
+            recalcTotals()
+        }
+    }
 
     private func recalcTotals() {
         let subtotal = currentCart.reduce(0) { $0 + $1.price_cents_snapshot * $1.quantity }

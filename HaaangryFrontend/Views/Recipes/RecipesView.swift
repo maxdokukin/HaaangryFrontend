@@ -14,7 +14,8 @@ struct RecipesView: View {
                         Text(r.title).bold()
                         ForEach(r.steps, id: \.self) { s in Text("• \(s)") }
                     }
-                }.listStyle(.plain)
+                }
+                .listStyle(.plain)
 
                 Text("Top YouTube").font(.headline).padding(.top)
                 ForEach(data.top_youtube, id: \.self) { url in
@@ -23,10 +24,12 @@ struct RecipesView: View {
                     }
                 }
             } else {
-                ProgressView().task {
-                    data = await APIClient.shared.request(.recipes(videoId: videoId), fallback: .recipesV1)
-                }
+                HStack { Spacer(); ProgressView(); Spacer() }
             }
-        }.padding()
+        }
+        .padding()
+        .task(id: videoId) {
+            data = await APIClient.shared.request(.recipes(videoId: videoId), fallback: .recipesV1)
+        }
     }
 }

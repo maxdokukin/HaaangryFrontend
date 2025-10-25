@@ -1,14 +1,24 @@
 import SwiftUI
 import AVFoundation
 
+private enum SheetRoute: Identifiable {
+    case order(Video)
+    case recipes(Video)
+
+    var id: String {
+        switch self {
+        case .order(let v):   return "order-\(v.id)"
+        case .recipes(let v): return "recipes-\(v.id)"
+        }
+    }
+}
+
 struct VideoFeedView: View {
     @EnvironmentObject var feed: FeedStore
     @EnvironmentObject var orders: OrderStore
 
-    @State private var showingOrder = false
-    @State private var showingRecipes = false
-    @State private var selectedVideo: Video?
     @State private var currentIndex: Int = 0
+    @State private var sheet: SheetRoute?
 
     @StateObject private var pool = PlayerPool()
 
@@ -17,18 +27,15 @@ struct VideoFeedView: View {
             if feed.videos.isEmpty {
                 ProgressView().task { await feed.load() }
             } else {
-                VerticalPager(count: feed.videos.count, index: $currentIndex) { i in
+                VerticalPager(
+                    count: feed.videos.count,
+                    index: $currentIndex,
+                    onSwipeLeft: { i in sheet = .recipes(feed.videos[i]) },
+                    onSwipeRight: { i in sheet = .order(feed.videos[i]) }
+                ) { i in
                     VideoCardView(
                         video: feed.videos[i],
-                        isActive: i == currentIndex,
-                        onSwipeLeft: {
-                            selectedVideo = feed.videos[i]
-                            showingRecipes = true
-                        },
-                        onSwipeRight: {
-                            selectedVideo = feed.videos[i]
-                            showingOrder = true
-                        }
+                        isActive: i == currentIndex
                     )
                     .environmentObject(pool)
                     .ignoresSafeArea()
@@ -36,14 +43,12 @@ struct VideoFeedView: View {
                 .ignoresSafeArea()
             }
         }
-        .sheet(isPresented: $showingOrder) {
-            if let v = selectedVideo {
+        .sheet(item: $sheet) { route in
+            switch route {
+            case .order(let v):
                 OrderOptionsSheet(videoId: v.id)
                     .presentationDetents([.medium, .large])
-            }
-        }
-        .sheet(isPresented: $showingRecipes) {
-            if let v = selectedVideo {
+            case .recipes(let v):
                 RecipesView(videoId: v.id)
                     .presentationDetents([.medium, .large])
             }
@@ -84,8 +89,6 @@ struct VideoFeedView: View {
 struct VideoCardView: View {
     let video: Video
     let isActive: Bool
-    var onSwipeLeft: (() -> Void)? = nil
-    var onSwipeRight: (() -> Void)? = nil
 
     @Environment(\.scenePhase) private var scenePhase
     @EnvironmentObject private var pool: PlayerPool
@@ -168,18 +171,7 @@ struct VideoCardView: View {
         .onChange(of: scenePhase) { phase in
             if phase == .active { syncPlayback() } else { player?.pause() }
         }
-        // Capture horizontal drags before the pager scroll view.
-        .highPriorityGesture(
-            DragGesture(minimumDistance: 20)
-                .onEnded { value in
-                    guard isActive else { return }
-                    let dx = value.translation.width
-                    let dy = value.translation.height
-                    if abs(dx) > abs(dy), abs(dx) > 80 {
-                        if dx > 0 { onSwipeRight?() } else { onSwipeLeft?() }
-                    }
-                }
-        )
+        // No per-card DragGesture. Swipes handled by VerticalPager.
     }
 
     private func syncPlayback() {
