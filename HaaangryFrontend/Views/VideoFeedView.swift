@@ -156,6 +156,7 @@ struct VideoCardView: View {
                     .transition(.opacity)
             }
         }
+        .contentShape(Rectangle())
         .onAppear {
             if let url = URL(string: video.url) {
                 player = pool.player(for: video.id, url: url, muted: isMuted)
@@ -167,11 +168,13 @@ struct VideoCardView: View {
         .onChange(of: scenePhase) { phase in
             if phase == .active { syncPlayback() } else { player?.pause() }
         }
-        .gesture(
+        // Capture horizontal drags before the pager scroll view.
+        .highPriorityGesture(
             DragGesture(minimumDistance: 20)
                 .onEnded { value in
                     guard isActive else { return }
-                    let dx = value.translation.width, dy = value.translation.height
+                    let dx = value.translation.width
+                    let dy = value.translation.height
                     if abs(dx) > abs(dy), abs(dx) > 80 {
                         if dx > 0 { onSwipeRight?() } else { onSwipeLeft?() }
                     }
