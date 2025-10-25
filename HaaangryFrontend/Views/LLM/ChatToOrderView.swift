@@ -7,21 +7,34 @@ struct ChatToOrderView: View {
     @State private var top: [Restaurant] = []
 
     var body: some View {
-        VStack {
+        VStack(spacing: 12) {
             ScrollView {
                 if let intent = responseIntent {
-                    Text("You seem in the mood for: \(intent)").padding(.bottom)
+                    Text("You seem in the mood for: \(intent)")
+                        .glassContainer(cornerRadius: 14, padding: 10, shadowRadius: 6)
+                        .padding(.bottom, 6)
                     Text("Top picks:").bold()
-                    ForEach(top) { r in
-                        Text("• \(r.name) (\(r.delivery_eta_min)-\(r.delivery_eta_max) min)")
+                    VStack(spacing: 8) {
+                        ForEach(top) { r in
+                            HStack {
+                                Text(r.name).bold()
+                                Spacer()
+                                Text("\(r.delivery_eta_min)-\(r.delivery_eta_max) min").font(.caption).foregroundStyle(.secondary)
+                            }
+                            .glassContainer(cornerRadius: 12, padding: 10, shadowRadius: 6)
+                        }
                     }
                 } else {
-                    Text("Tell me what you feel like eating…").foregroundStyle(.secondary)
+                    Text("Tell me what you feel like eating…")
+                        .foregroundStyle(.secondary)
+                        .glassContainer(cornerRadius: 12, padding: 10, shadowRadius: 4)
                 }
             }
-            HStack {
+
+            HStack(spacing: 10) {
                 TextField("e.g., spicy ramen with dumplings", text: $input)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .glassField()
+
                 Button("Send") {
                     Task {
                         struct Req: Encodable { let user_text: String }
@@ -32,7 +45,9 @@ struct ChatToOrderView: View {
                         }
                     }
                 }
-            }.padding(.top)
+                .glassButton()
+            }
+            .padding(.top, 2)
         }
         .padding()
     }

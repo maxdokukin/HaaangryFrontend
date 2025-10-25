@@ -138,10 +138,8 @@ struct VideoCardView: View {
                         showTransientHUD()
                     } label: {
                         Image(systemName: isMuted ? "speaker.slash.fill" : "speaker.wave.2.fill")
-                            .padding(10)
-                            .background(.ultraThinMaterial)
-                            .clipShape(Capsule())
                     }
+                    .glassIconButton()
 
                     Spacer()
                     BottomActionsBar()
@@ -154,8 +152,8 @@ struct VideoCardView: View {
                 Image(systemName: shouldPlay ? "play.fill" : "pause.fill")
                     .font(.title)
                     .padding(12)
-                    .background(.ultraThinMaterial)
-                    .clipShape(Circle())
+                    .background(.ultraThinMaterial, in: Circle())
+                    .overlay(Glass.strokeShape(Circle()))
                     .transition(.opacity)
             }
         }
@@ -171,7 +169,6 @@ struct VideoCardView: View {
         .onChange(of: scenePhase) { phase in
             if phase == .active { syncPlayback() } else { player?.pause() }
         }
-        // No per-card DragGesture. Swipes handled by VerticalPager.
     }
 
     private func syncPlayback() {

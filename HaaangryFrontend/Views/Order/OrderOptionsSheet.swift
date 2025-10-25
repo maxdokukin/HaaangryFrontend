@@ -6,69 +6,96 @@ struct OrderOptionsSheet: View {
     let videoId: String
 
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 12) {
             if let opts = orders.orderOptions, opts.video_id == videoId {
-                Text("You’re craving: \(opts.intent)").font(.title3).padding(.bottom, 8)
+                Text("You’re craving: \(opts.intent)")
+                    .font(.title3)
+                    .bold()
+                    .padding(.bottom, 2)
+
                 Text("Top Restaurants").font(.headline)
                 ScrollView(.horizontal, showsIndicators: false) {
-                    HStack {
+                    HStack(spacing: 10) {
                         ForEach(opts.top_restaurants) { r in
                             Button {
                                 orders.selectedRestaurant = r
                                 orders.recalcTotals()
                             } label: {
-                                VStack {
+                                VStack(spacing: 4) {
                                     Text(r.name).bold()
-                                    Text("ETA \(r.delivery_eta_min)-\(r.delivery_eta_max) min").font(.caption)
+                                    Text("ETA \(r.delivery_eta_min)-\(r.delivery_eta_max) min")
+                                        .font(.caption2)
+                                        .foregroundStyle(.secondary)
                                 }
-                                .padding()
-                                .background(r.id == orders.selectedRestaurant?.id ? Color.gray.opacity(0.3) : Color.clear)
-                                .cornerRadius(8)
+                                .frame(minWidth: 140)
                             }
+                            .glassButton()
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                                    .strokeBorder(
+                                        (r.id == orders.selectedRestaurant?.id) ?
+                                            Color.accentColor.opacity(0.8) :
+                                            Color.clear,
+                                        lineWidth: 2
+                                    )
+                            )
                         }
-                    }.padding(.vertical, 6)
+                    }
+                    .padding(.vertical, 6)
                 }
 
                 Text("Your Cart").font(.headline)
                 ForEach(orders.currentCart) { item in
-                    HStack {
+                    HStack(spacing: 10) {
                         Text(item.name_snapshot)
+                            .lineLimit(1)
+                            .truncationMode(.tail)
                         Spacer()
-                        HStack {
-                            Button { orders.dec(item.menu_item_id) } label: { Image(systemName: "minus.circle") }
+                        HStack(spacing: 8) {
+                            Button { orders.dec(item.menu_item_id) } label: { Image(systemName: "minus") }
+                                .glassIconButton()
                             Text("\(item.quantity)")
-                            Button { orders.inc(item.menu_item_id) } label: { Image(systemName: "plus.circle") }
+                                .frame(minWidth: 22)
+                            Button { orders.inc(item.menu_item_id) } label: { Image(systemName: "plus") }
+                                .glassIconButton()
                         }
                         Text(price(item.price_cents_snapshot * item.quantity))
+                            .font(.subheadline).bold()
                     }
+                    .glassContainer(cornerRadius: 14, padding: 8, shadowRadius: 6)
                 }
 
                 if !opts.suggested_items.isEmpty {
-                    Text("Suggested").font(.headline).padding(.top, 6)
+                    Text("Suggested").font(.headline).padding(.top, 4)
                     ScrollView(.horizontal, showsIndicators: false) {
-                        HStack {
+                        HStack(spacing: 10) {
                             ForEach(opts.suggested_items) { m in
                                 Button { orders.addSuggested(m) } label: {
-                                    VStack(alignment: .leading) {
-                                        Text(m.name).bold()
-                                        Text(price(m.price_cents))
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text(m.name).bold().lineLimit(1)
+                                        Text(price(m.price_cents)).font(.caption)
                                     }
-                                    .padding().background(Color.gray.opacity(0.15)).cornerRadius(8)
+                                    .frame(minWidth: 120, alignment: .leading)
                                 }
+                                .glassButton()
                             }
                         }
                     }
                 }
 
-                Divider().padding(.vertical, 8)
+                Divider().padding(.vertical, 6)
+
                 HStack {
                     Text("Total")
                     Spacer()
                     Text(price(orders.totalCents)).bold()
                 }
                 if let r = orders.selectedRestaurant {
-                    Text("ETA: ~\(r.delivery_eta_min)-\(r.delivery_eta_max) min").font(.caption)
+                    Text("ETA: ~\(r.delivery_eta_min)-\(r.delivery_eta_max) min")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
+
                 Button {
                     Task {
                         if let userId = profile.profile?.user_id {
@@ -77,16 +104,16 @@ struct OrderOptionsSheet: View {
                     }
                 } label: {
                     Text("Place Order")
-                        .frame(maxWidth: .infinity).padding().background(Color.accentColor).foregroundColor(.white)
-                        .cornerRadius(10)
-                }.padding(.top, 8)
+                        .frame(maxWidth: .infinity)
+                }
+                .glassButtonProminent()
+                .padding(.top, 6)
             } else {
                 // Loading state while fetch runs
                 HStack { Spacer(); ProgressView(); Spacer() }
             }
         }
         .padding()
-        // Ensure fetch always runs when the sheet appears for a video.
         .task(id: videoId) {
             await orders.fetchOptions(for: videoId, force: true)
         }
