@@ -1,4 +1,3 @@
-// Utilities/PlayerPool.swift
 import Foundation
 import AVFoundation
 import Combine
@@ -21,10 +20,14 @@ final class PlayerPool: ObservableObject {
 
     func warm(id: String, url: URL) { _ = player(for: id, url: url, muted: true) }
 
-    func play(id: String, url: URL, muted: Bool) -> AVPlayer {
-        let p = player(for: id, url: url, muted: muted)
-        p.play()
-        return p
+    /// Play without touching mute state if the player already exists.
+    func playKeepingMuteState(id: String, url: URL, defaultMuted: Bool) {
+        if let p = players[id] {
+            p.play()
+        } else {
+            let p = player(for: id, url: url, muted: defaultMuted)
+            p.play()
+        }
     }
 
     func pauseAll() { players.values.forEach { $0.pause() } }

@@ -63,9 +63,9 @@ struct VideoFeedView: View {
         guard feed.videos.indices.contains(currentIndex) else { return }
         let v = feed.videos[currentIndex]
         guard let url = URL(string: v.url) else { return }
-        // Ensure only the active one plays
         pool.pauseAll()
-        _ = pool.play(id: v.id, url: url, muted: true)
+        // Do not force-mute here; keep whatever the card set.
+        pool.playKeepingMuteState(id: v.id, url: url, defaultMuted: false)
     }
 
     private func preloadAroundCurrent() {
@@ -93,7 +93,7 @@ struct VideoCardView: View {
 
     @State private var player: AVPlayer?
     @State private var shouldPlay = true
-    @State private var isMuted = true
+    @State private var isMuted = false   // default: sound ON
     @State private var showHUD = false
 
     var body: some View {
@@ -147,7 +147,7 @@ struct VideoCardView: View {
         }
         .onAppear {
             if let url = URL(string: video.url) {
-                // Reuse or create player now so FeedView can start it immediately
+                // Create or reuse and apply the current mute preference.
                 player = pool.player(for: video.id, url: url, muted: isMuted)
             }
             syncPlayback()
