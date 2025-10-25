@@ -11,65 +11,30 @@ struct VideoFeedView: View {
     @State private var selectedVideo: Video?
 
     @State private var currentIndex: Int = 0
-    @State private var verticalDragOffset: CGFloat = 0
 
     var body: some View {
-        GeometryReader { geo in
-            ZStack {
-                if feed.videos.isEmpty {
-                    ProgressView()
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .task { await feed.load() }
-                } else {
-                    ZStack {
-                        ForEach(feed.videos.indices, id: \.self) { i in
-                            let v = feed.videos[i]
-                            VideoCardView(video: v, isActive: i == currentIndex)
-                                .frame(width: geo.size.width, height: geo.size.height)
-                                .offset(y: CGFloat(i - currentIndex) * geo.size.height + verticalDragOffset)
-                                .animation(.interactiveSpring(), value: currentIndex)
-                                .animation(.interactiveSpring(), value: verticalDragOffset)
-                                .zIndex(i == currentIndex ? 1 : 0)
+        ZStack {
+            if feed.videos.isEmpty {
+                ProgressView()
+                    .task { await feed.load() }
+            } else {
+                VerticalPager(count: feed.videos.count, index: $currentIndex) { i in
+                    VideoCardView(
+                        video: feed.videos[i],
+                        isActive: i == currentIndex,
+                        onSwipeLeft: {
+                            selectedVideo = feed.videos[i]
+                            showingRecipes = true
+                        },
+                        onSwipeRight: {
+                            selectedVideo = feed.videos[i]
+                            showingOrder = true
                         }
-                    }
-                    .contentShape(Rectangle())
-                    .gesture(
-                        DragGesture(minimumDistance: 20)
-                            .onChanged { value in
-                                if abs(value.translation.height) > abs(value.translation.width) {
-                                    verticalDragOffset = value.translation.height
-                                } else {
-                                    verticalDragOffset = 0
-                                }
-                            }
-                            .onEnded { value in
-                                let dx = value.translation.width
-                                let dy = value.translation.height
-                                defer { verticalDragOffset = 0 }
-
-                                // Horizontal: left = recipes, right = order
-                                if abs(dx) > abs(dy) {
-                                    if dx > 80 {
-                                        selectedVideo = feed.videos[currentIndex]
-                                        showingOrder = true
-                                    } else if dx < -80 {
-                                        selectedVideo = feed.videos[currentIndex]
-                                        showingRecipes = true
-                                    }
-                                    return
-                                }
-
-                                // Vertical cards: swipe down → next, up → previous
-                                if dy > 80, currentIndex < feed.videos.count - 1 {
-                                    currentIndex += 1
-                                } else if dy < -80, currentIndex > 0 {
-                                    currentIndex -= 1
-                                }
-                            }
                     )
+                    .ignoresSafeArea()
                 }
+                .ignoresSafeArea()
             }
-            .ignoresSafeArea()
         }
         .sheet(isPresented: $showingOrder) {
             if let v = selectedVideo {
@@ -83,12 +48,15 @@ struct VideoFeedView: View {
                     .presentationDetents([.medium, .large])
             }
         }
+        .preferredColorScheme(.dark)
     }
 }
 
 struct VideoCardView: View {
     let video: Video
     let isActive: Bool
+    var onSwipeLeft: (() -> Void)? = nil
+    var onSwipeRight: (() -> Void)? = nil
 
     @Environment(\.scenePhase) private var scenePhase
     @State private var player: AVPlayer?
@@ -103,12 +71,9 @@ struct VideoCardView: View {
             if let player {
                 TikTokPlayerView(player: player, isMuted: isMuted)
                     .ignoresSafeArea()
-                    .onTapGesture {
-                        togglePlay()
-                    }
+                    .onTapGesture { togglePlay() }
             }
 
-            // Minimal overlay UI
             VStack {
                 Spacer()
                 HStack(alignment: .bottom) {
@@ -124,8 +89,8 @@ struct VideoCardView: View {
                 HStack {
                     Button {
                         isMuted.toggle()
-                        showTransientHUD()
                         player?.isMuted = isMuted
+                        showTransientHUD()
                     } label: {
                         Image(systemName: isMuted ? "speaker.slash.fill" : "speaker.wave.2.fill")
                             .padding(10)
@@ -157,28 +122,27 @@ struct VideoCardView: View {
             }
             syncPlayback()
         }
-        .onDisappear {
-            player?.pause()
-        }
-        .onChange(of: isActive) { _ in
-            syncPlayback()
-        }
+        .onDisappear { player?.pause() }
+        .onChange(of: isActive) { _ in syncPlayback() }
         .onChange(of: scenePhase) { phase in
-            if phase == .active {
-                syncPlayback()
-            } else {
-                player?.pause()
-            }
+            if phase == .active { syncPlayback() } else { player?.pause() }
         }
+        .gesture(
+            DragGesture(minimumDistance: 20)
+                .onEnded { value in
+                    guard isActive else { return }
+                    let dx = value.translation.width
+                    let dy = value.translation.height
+                    if abs(dx) > abs(dy), abs(dx) > 80 {
+                        if dx > 0 { onSwipeRight?() } else { onSwipeLeft?() }
+                    }
+                }
+        )
     }
 
     private func syncPlayback() {
         guard let player else { return }
-        if isActive && shouldPlay {
-            player.play()
-        } else {
-            player.pause()
-        }
+        if isActive && shouldPlay { player.play() } else { player.pause() }
     }
 
     private func togglePlay() {
