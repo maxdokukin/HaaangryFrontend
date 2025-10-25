@@ -5,22 +5,22 @@ struct RightMetaOverlay: View {
     let comments: Int
 
     var body: some View {
-        VStack(spacing: 14) {
-            VStack(spacing: 4) {
-                Image(systemName: "heart.fill")
-                Text("\(likes)")
-            }
-            .padding(10)
-            .glassContainer(cornerRadius: 12, padding: 6, shadowRadius: 8)
-
-            VStack(spacing: 4) {
-                Image(systemName: "text.bubble.fill")
-                Text("\(comments)")
-            }
-            .padding(10)
-            .glassContainer(cornerRadius: 12, padding: 6, shadowRadius: 8)
+        VStack(spacing: 12) {
+            stat(icon: "heart.fill", value: likes)
+            stat(icon: "text.bubble.fill", value: comments)
         }
-        .font(.caption)
         .padding(.trailing, 6)
+    }
+
+    private func stat(icon: String, value: Int) -> some View {
+        VStack(spacing: 4) {
+            Image(systemName: icon)
+                .font(.headline)
+            Text(value.formatted(.number.notation(.compactName)))
+                .font(.caption2)
+                .monospacedDigit()
+        }
+        .frame(width: 66, height: 66)
+        .glassContainer(cornerRadius: 14, padding: 8, shadowRadius: 10)
     }
 }

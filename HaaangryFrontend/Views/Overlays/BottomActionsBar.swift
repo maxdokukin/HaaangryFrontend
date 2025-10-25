@@ -6,38 +6,38 @@ struct BottomActionsBar: View {
     @State private var showProfile = false
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: 10) {
             Button {
                 showChat = true
             } label: {
-                Label("Chat to Order", systemImage: "message.fill")
-                    .padding(.horizontal, 2)
+                Label("Chat", systemImage: "bubble.left.and.bubble.right.fill")
+                    .labelStyle(.titleAndIcon)
+                    .imageScale(.medium)
             }
-            .glassButton()
-
-            Spacer(minLength: 8)
+            .frame(maxWidth: .infinity)
+            .glassButton(width: nil, height: 46)
 
             Button {
                 showVoice = true
             } label: {
-                Label("Talk to Order", systemImage: "mic.fill")
-                    .padding(.horizontal, 2)
+                Label("Talk", systemImage: "mic.fill")
+                    .labelStyle(.titleAndIcon)
+                    .imageScale(.medium)
             }
-            .glassButton()
-
-            Spacer(minLength: 8)
+            .frame(maxWidth: .infinity)
+            .glassButton(width: nil, height: 46)
 
             Button {
                 showProfile = true
             } label: {
                 Label("Profile", systemImage: "person.crop.circle")
-                    .padding(.horizontal, 2)
+                    .labelStyle(.titleAndIcon)
+                    .imageScale(.medium)
             }
-            .glassButton()
+            .frame(maxWidth: .infinity)
+            .glassButton(width: nil, height: 46)
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 10)
-        .background(.ultraThinMaterial) // bar substrate remains translucent
+        .glassContainer(cornerRadius: 24, padding: 8, shadowRadius: 14)
         .sheet(isPresented: $showChat) { ChatToOrderView() }
         .sheet(isPresented: $showVoice) { VoiceToOrderView() }
         .sheet(isPresented: $showProfile) { ProfileView() }

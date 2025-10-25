@@ -131,6 +131,7 @@ struct VideoCardView: View {
                 }
                 .padding(.horizontal)
 
+                // Mute button only on this row
                 HStack {
                     Button {
                         isMuted.toggle()
@@ -139,13 +140,20 @@ struct VideoCardView: View {
                     } label: {
                         Image(systemName: isMuted ? "speaker.slash.fill" : "speaker.wave.2.fill")
                     }
-                    .glassIconButton()
+                    .glassIconButton(size: 44)
 
                     Spacer()
-                    BottomActionsBar()
                 }
                 .padding(.horizontal)
-                .padding(.bottom, 8)
+                .padding(.bottom, 4)
+            }
+
+            // Full-width bottom dock
+            VStack {
+                Spacer()
+                BottomActionsBar()
+                    .padding(.horizontal, 12)
+                    .padding(.bottom, 8)
             }
 
             if showHUD {
@@ -153,7 +161,7 @@ struct VideoCardView: View {
                     .font(.title)
                     .padding(12)
                     .background(.ultraThinMaterial, in: Circle())
-                    .overlay(Glass.strokeShape(Circle()))
+                    .overlay(Glass.stroke(Circle()))
                     .transition(.opacity)
             }
         }
