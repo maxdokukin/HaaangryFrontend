@@ -1,0 +1,16 @@
+{
+  "video_id":"v1",
+  "intent":"Spicy Ramen",
+  "top_restaurants":[
+    {"id":"r1","name":"Ramen Cart","logo_url":null,"delivery_eta_min":25,"delivery_eta_max":40,"delivery_fee_cents":199},
+    {"id":"r3","name":"Sushi Bar","logo_url":null,"delivery_eta_min":30,"delivery_eta_max":50,"delivery_fee_cents":399},
+    {"id":"r2","name":"Taco Truck Co","logo_url":null,"delivery_eta_min":20,"delivery_eta_max":35,"delivery_fee_cents":299}
+  ],
+  "prefill":[
+    {"menu_item_id":"m1","name_snapshot":"Spicy Tonkotsu Ramen","price_cents_snapshot":1399,"quantity":1}
+  ],
+  "suggested_items":[
+    {"id":"m2","restaurant_id":"r1","name":"Gyoza (6pc)","description":"Pork dumplings","price_cents":599,"image_url":null,"tags":["dumplings"]},
+    {"id":"m4","restaurant_id":"r3","name":"Salmon Nigiri (6)","description":"Fresh cut","price_cents":1499,"image_url":null,"tags":["sushi"]}
+  ]
+}

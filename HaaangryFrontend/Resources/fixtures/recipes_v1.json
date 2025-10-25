@@ -1,0 +1,9 @@
+{
+  "video_id":"v1",
+  "top_text_recipes":[
+    {"title":"Quick Spicy Tonkotsu","steps":["Boil broth","Add aromatics","Cook noodles","Assemble bowl"]},
+    {"title":"Weeknight Ramen Hack","steps":["Stock + tare","Noodles","Chili oil","Toppings"]},
+    {"title":"Rich Pork Ramen","steps":["Broth long simmer","Noodles","Egg","Scallions"]}
+  ],
+  "top_youtube": ["https://youtu.be/ramen1","https://youtu.be/ramen2","https://youtu.be/ramen3"]
+}

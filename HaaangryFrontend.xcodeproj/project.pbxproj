@@ -7,19 +7,19 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		CD528FD82EACB205002127A6 /* haaangry-frontend.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "haaangry-frontend.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CD52903F2EACBDA4002127A6 /* HaaangryFrontend.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HaaangryFrontend.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		CD528FDA2EACB205002127A6 /* haaangry-frontend */ = {
+		CD5290412EACBDA4002127A6 /* HaaangryFrontend */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "haaangry-frontend";
+			path = HaaangryFrontend;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		CD528FD52EACB205002127A6 /* Frameworks */ = {
+		CD52903C2EACBDA4002127A6 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -29,18 +29,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		CD528FCF2EACB205002127A6 = {
+		CD5290362EACBDA4002127A6 = {
 			isa = PBXGroup;
 			children = (
-				CD528FDA2EACB205002127A6 /* haaangry-frontend */,
-				CD528FD92EACB205002127A6 /* Products */,
+				CD5290412EACBDA4002127A6 /* HaaangryFrontend */,
+				CD5290402EACBDA4002127A6 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		CD528FD92EACB205002127A6 /* Products */ = {
+		CD5290402EACBDA4002127A6 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				CD528FD82EACB205002127A6 /* haaangry-frontend.app */,
+				CD52903F2EACBDA4002127A6 /* HaaangryFrontend.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,64 +48,64 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		CD528FD72EACB205002127A6 /* haaangry-frontend */ = {
+		CD52903E2EACBDA4002127A6 /* HaaangryFrontend */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CD528FE32EACB206002127A6 /* Build configuration list for PBXNativeTarget "haaangry-frontend" */;
+			buildConfigurationList = CD52904A2EACBDA5002127A6 /* Build configuration list for PBXNativeTarget "HaaangryFrontend" */;
 			buildPhases = (
-				CD528FD42EACB205002127A6 /* Sources */,
-				CD528FD52EACB205002127A6 /* Frameworks */,
-				CD528FD62EACB205002127A6 /* Resources */,
+				CD52903B2EACBDA4002127A6 /* Sources */,
+				CD52903C2EACBDA4002127A6 /* Frameworks */,
+				CD52903D2EACBDA4002127A6 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				CD528FDA2EACB205002127A6 /* haaangry-frontend */,
+				CD5290412EACBDA4002127A6 /* HaaangryFrontend */,
 			);
-			name = "haaangry-frontend";
+			name = HaaangryFrontend;
 			packageProductDependencies = (
 			);
-			productName = "haaangry-frontend";
-			productReference = CD528FD82EACB205002127A6 /* haaangry-frontend.app */;
+			productName = HaaangryFrontend;
+			productReference = CD52903F2EACBDA4002127A6 /* HaaangryFrontend.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		CD528FD02EACB205002127A6 /* Project object */ = {
+		CD5290372EACBDA4002127A6 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 2600;
 				LastUpgradeCheck = 2600;
 				TargetAttributes = {
-					CD528FD72EACB205002127A6 = {
+					CD52903E2EACBDA4002127A6 = {
 						CreatedOnToolsVersion = 26.0.1;
 					};
 				};
 			};
-			buildConfigurationList = CD528FD32EACB205002127A6 /* Build configuration list for PBXProject "haaangry-frontend" */;
+			buildConfigurationList = CD52903A2EACBDA4002127A6 /* Build configuration list for PBXProject "HaaangryFrontend" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
 			);
-			mainGroup = CD528FCF2EACB205002127A6;
+			mainGroup = CD5290362EACBDA4002127A6;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = CD528FD92EACB205002127A6 /* Products */;
+			productRefGroup = CD5290402EACBDA4002127A6 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				CD528FD72EACB205002127A6 /* haaangry-frontend */,
+				CD52903E2EACBDA4002127A6 /* HaaangryFrontend */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		CD528FD62EACB205002127A6 /* Resources */ = {
+		CD52903D2EACBDA4002127A6 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -115,7 +115,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		CD528FD42EACB205002127A6 /* Sources */ = {
+		CD52903B2EACBDA4002127A6 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -125,7 +125,7 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		CD528FE12EACB206002127A6 /* Debug */ = {
+		CD5290482EACBDA5002127A6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -189,7 +189,7 @@
 			};
 			name = Debug;
 		};
-		CD528FE22EACB206002127A6 /* Release */ = {
+		CD5290492EACBDA5002127A6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -246,7 +246,7 @@
 			};
 			name = Release;
 		};
-		CD528FE42EACB206002127A6 /* Debug */ = {
+		CD52904B2EACBDA5002127A6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -266,7 +266,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.mb.haaangry-frontend.haaangry-frontend";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.mb.haaangry-frontend.HaaangryFrontend";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -278,7 +278,7 @@
 			};
 			name = Debug;
 		};
-		CD528FE52EACB206002127A6 /* Release */ = {
+		CD52904C2EACBDA5002127A6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -298,7 +298,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.mb.haaangry-frontend.haaangry-frontend";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.mb.haaangry-frontend.HaaangryFrontend";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -313,25 +313,25 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		CD528FD32EACB205002127A6 /* Build configuration list for PBXProject "haaangry-frontend" */ = {
+		CD52903A2EACBDA4002127A6 /* Build configuration list for PBXProject "HaaangryFrontend" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				CD528FE12EACB206002127A6 /* Debug */,
-				CD528FE22EACB206002127A6 /* Release */,
+				CD5290482EACBDA5002127A6 /* Debug */,
+				CD5290492EACBDA5002127A6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CD528FE32EACB206002127A6 /* Build configuration list for PBXNativeTarget "haaangry-frontend" */ = {
+		CD52904A2EACBDA5002127A6 /* Build configuration list for PBXNativeTarget "HaaangryFrontend" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				CD528FE42EACB206002127A6 /* Debug */,
-				CD528FE52EACB206002127A6 /* Release */,
+				CD52904B2EACBDA5002127A6 /* Debug */,
+				CD52904C2EACBDA5002127A6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = CD528FD02EACB205002127A6 /* Project object */;
+	rootObject = CD5290372EACBDA4002127A6 /* Project object */;
 }

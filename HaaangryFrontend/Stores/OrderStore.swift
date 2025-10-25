@@ -1,0 +1,52 @@
+import Foundation
+
+@MainActor
+final class OrderStore: ObservableObject {
+    @Published var orderOptions: OrderOptions?
+    @Published var currentCart: [OrderItem] = []
+    @Published var selectedRestaurant: Restaurant?
+    @Published var etaMinutes: Int = 0
+    @Published var totalCents: Int = 0
+
+    func fetchOptions(for videoId: String) async {
+        if let opts: OrderOptions = await APIClient.shared.request(.orderOptions(videoId: videoId), fallback: .orderOptionsV1) {
+            self.orderOptions = opts
+            self.currentCart = opts.prefill
+            self.selectedRestaurant = opts.top_restaurants.first
+            recalcTotals()
+        }
+    }
+
+    func addSuggested(_ item: MenuItem) {
+        let order = OrderItem(menu_item_id: item.id, name_snapshot: item.name, price_cents_snapshot: item.price_cents, quantity: 1)
+        currentCart.append(order)
+        recalcTotals()
+    }
+
+    func inc(_ id: String) { if let idx = currentCart.firstIndex(where: {$0.menu_item_id == id}) {
+        currentCart[idx].quantity += 1; recalcTotals()
+    }}
+    func dec(_ id: String) { if let idx = currentCart.firstIndex(where: {$0.menu_item_id == id}) {
+        currentCart[idx].quantity = max(1, currentCart[idx].quantity - 1); recalcTotals()
+    }}
+
+    private func recalcTotals() {
+        let subtotal = currentCart.reduce(0) { $0 + $1.price_cents_snapshot * $1.quantity }
+        let fee = selectedRestaurant?.delivery_fee_cents ?? 299
+        totalCents = subtotal + fee
+        etaMinutes = 30
+    }
+
+    func placeOrder(userId: String) async -> Order? {
+        guard let restaurant = selectedRestaurant else { return nil }
+        let subtotal = currentCart.reduce(0) { $0 + $1.price_cents_snapshot * $1.quantity }
+        let fee = restaurant.delivery_fee_cents
+        let body = Order(
+            id: "temp", user_id: userId, restaurant_id: restaurant.id,
+            status: "created", items: currentCart,
+            subtotal_cents: subtotal, delivery_fee_cents: fee,
+            total_cents: subtotal + fee, eta_minutes: 0
+        )
+        return await APIClient.shared.request(.createOrder, body: body, fallback: nil) as Order?
+    }
+}

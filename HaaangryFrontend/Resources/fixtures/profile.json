@@ -1,0 +1,6 @@
+{
+  "user_id":"u1",
+  "name":"Alex",
+  "credits_balance_cents":3000,
+  "default_address": {"line1":"1 Market St","city":"SF","state":"CA","zip":"94105"}
+}

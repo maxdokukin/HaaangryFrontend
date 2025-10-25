@@ -111,7 +111,7 @@ LLM guardrails:
 * Store only non-sensitive data on-device (e.g., credits in profile payload). No secret keys in the app bundle.
 * Add Info.plist usage descriptions for clarity and App Review friendliness (if needed later).
 10) Environments, config, and tooling
-* iOS: Xcode 15+, Swift 5.9+, iOS 16 target.
+* iOS: Xcode 26.0.1+, Swift 5.9+, iOS 26 target.
 * Backend: Python 3.11, FastAPI, Uvicorn, enable CORS (allow_origins = ["*"]) for local dev.
 * Config: APIClient.baseURL points to http://127.0.0.1:8000 by default; change for LAN.
 * Fixtures: JSON files bundled under Resources/fixtures/; filenames mapped in code.
