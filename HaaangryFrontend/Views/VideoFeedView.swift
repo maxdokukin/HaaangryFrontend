@@ -1,4 +1,3 @@
-// Views/VideoFeedView.swift
 import SwiftUI
 import AVFoundation
 
@@ -9,14 +8,14 @@ struct VideoFeedView: View {
     @State private var showingOrder = false
     @State private var showingRecipes = false
     @State private var selectedVideo: Video?
-
     @State private var currentIndex: Int = 0
+
+    @StateObject private var pool = PlayerPool()
 
     var body: some View {
         ZStack {
             if feed.videos.isEmpty {
-                ProgressView()
-                    .task { await feed.load() }
+                ProgressView().task { await feed.load() }
             } else {
                 VerticalPager(count: feed.videos.count, index: $currentIndex) { i in
                     VideoCardView(
@@ -31,6 +30,7 @@ struct VideoFeedView: View {
                             showingOrder = true
                         }
                     )
+                    .environmentObject(pool)
                     .ignoresSafeArea()
                 }
                 .ignoresSafeArea()
@@ -49,6 +49,20 @@ struct VideoFeedView: View {
             }
         }
         .preferredColorScheme(.dark)
+        .onChange(of: currentIndex) { _ in preloadAroundCurrent() }
+        .onAppear { preloadAroundCurrent() }
+    }
+
+    private func preloadAroundCurrent() {
+        guard feed.videos.indices.contains(currentIndex) else { return }
+        let idsToKeep = [-1,0,1].compactMap { offset -> String? in
+            let idx = currentIndex + offset
+            guard feed.videos.indices.contains(idx) else { return nil }
+            let v = feed.videos[idx]
+            if let url = URL(string: v.url) { pool.warm(id: v.id, url: url) }
+            return v.id
+        }
+        pool.trim(keep: Set(idsToKeep))
     }
 }
 
@@ -59,6 +73,8 @@ struct VideoCardView: View {
     var onSwipeRight: (() -> Void)? = nil
 
     @Environment(\.scenePhase) private var scenePhase
+    @EnvironmentObject private var pool: PlayerPool
+
     @State private var player: AVPlayer?
     @State private var shouldPlay = true
     @State private var isMuted = true
@@ -115,10 +131,8 @@ struct VideoCardView: View {
             }
         }
         .onAppear {
-            if player == nil, let url = URL(string: video.url) {
-                let p = AVPlayer(url: url)
-                p.isMuted = isMuted
-                player = p
+            if let url = URL(string: video.url) {
+                player = pool.player(for: video.id, url: url, muted: isMuted)
             }
             syncPlayback()
         }
@@ -131,8 +145,7 @@ struct VideoCardView: View {
             DragGesture(minimumDistance: 20)
                 .onEnded { value in
                     guard isActive else { return }
-                    let dx = value.translation.width
-                    let dy = value.translation.height
+                    let dx = value.translation.width, dy = value.translation.height
                     if abs(dx) > abs(dy), abs(dx) > 80 {
                         if dx > 0 { onSwipeRight?() } else { onSwipeLeft?() }
                     }
