@@ -19,6 +19,7 @@ struct VideoFeedView: View {
 
     @State private var currentIndex: Int = 0
     @State private var sheet: SheetRoute?
+    @State private var isMuted: Bool = false
 
     @StateObject private var pool = PlayerPool()
 
@@ -35,7 +36,8 @@ struct VideoFeedView: View {
                 ) { i in
                     VideoCardView(
                         video: feed.videos[i],
-                        isActive: i == currentIndex
+                        isActive: i == currentIndex,
+                        isMuted: $isMuted
                     )
                     .environmentObject(pool)
                     .ignoresSafeArea()
@@ -53,6 +55,12 @@ struct VideoFeedView: View {
                     .presentationDetents([.medium, .large])
             }
         }
+        // Place the bottom bar as a safe-area inset to prevent collisions
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            BottomActionsBar(isMuted: $isMuted)
+                .padding(.horizontal, 12)
+                .padding(.bottom, 8)
+        }
         .preferredColorScheme(.dark)
         .onChange(of: currentIndex) { _ in
             preloadAroundCurrent()
@@ -69,7 +77,9 @@ struct VideoFeedView: View {
         let v = feed.videos[currentIndex]
         guard let url = URL(string: v.url) else { return }
         pool.pauseAll()
-        pool.playKeepingMuteState(id: v.id, url: url, defaultMuted: false)
+        // Ensure the active player's mute state matches the global toggle
+        let p = pool.player(for: v.id, url: url, muted: isMuted)
+        p.play()
     }
 
     private func preloadAroundCurrent() {
@@ -89,13 +99,13 @@ struct VideoFeedView: View {
 struct VideoCardView: View {
     let video: Video
     let isActive: Bool
+    @Binding var isMuted: Bool
 
     @Environment(\.scenePhase) private var scenePhase
     @EnvironmentObject private var pool: PlayerPool
 
     @State private var player: AVPlayer?
     @State private var shouldPlay = true
-    @State private var isMuted = false
     @State private var showHUD = false
 
     var body: some View {
@@ -146,18 +156,9 @@ struct VideoCardView: View {
                 .padding(.bottom, 4)
             }
 
-            // Right-side floating stats
             RightMetaOverlay(likes: video.like_count, comments: video.comment_count)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
                 .padding(.trailing, 8)
-
-            // Bottom dock
-            VStack {
-                Spacer()
-                BottomActionsBar()
-                    .padding(.horizontal, 12)
-                    .padding(.bottom, 8)
-            }
 
             if showHUD {
                 Image(systemName: shouldPlay ? "play.fill" : "pause.fill")
@@ -179,6 +180,9 @@ struct VideoCardView: View {
         .onChange(of: isActive) { _ in syncPlayback() }
         .onChange(of: scenePhase) { phase in
             if phase == .active { syncPlayback() } else { player?.pause() }
+        }
+        .onChange(of: isMuted) { val in
+            player?.isMuted = val
         }
     }
 

@@ -1,12 +1,25 @@
 import SwiftUI
 
 struct BottomActionsBar: View {
+    @Binding var isMuted: Bool
+
     @State private var showChat = false
     @State private var showVoice = false
     @State private var showProfile = false
 
     var body: some View {
         HStack(spacing: 10) {
+            Button {
+                isMuted.toggle()
+            } label: {
+                Label(isMuted ? "Unmute" : "Mute",
+                      systemImage: isMuted ? "speaker.slash.fill" : "speaker.wave.2.fill")
+                    .labelStyle(.titleAndIcon)
+                    .imageScale(.medium)
+            }
+            .frame(maxWidth: .infinity)
+            .glassButton(width: nil, height: 46)
+
             Button {
                 showChat = true
             } label: {
