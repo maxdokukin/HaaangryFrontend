@@ -126,12 +126,10 @@ struct VideoCardView: View {
                     }
                     .layoutPriority(1)
 
-                    Spacer()
-                    RightMetaOverlay(likes: video.like_count, comments: video.comment_count)
+                    Spacer(minLength: 0)
                 }
                 .padding(.horizontal)
 
-                // Mute button only on this row
                 HStack {
                     Button {
                         isMuted.toggle()
@@ -148,7 +146,12 @@ struct VideoCardView: View {
                 .padding(.bottom, 4)
             }
 
-            // Full-width bottom dock
+            // Right-side floating stats
+            RightMetaOverlay(likes: video.like_count, comments: video.comment_count)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
+                .padding(.trailing, 8)
+
+            // Bottom dock
             VStack {
                 Spacer()
                 BottomActionsBar()

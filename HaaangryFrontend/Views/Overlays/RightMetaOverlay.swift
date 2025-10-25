@@ -9,18 +9,23 @@ struct RightMetaOverlay: View {
             stat(icon: "heart.fill", value: likes)
             stat(icon: "text.bubble.fill", value: comments)
         }
-        .padding(.trailing, 6)
+        .padding(.vertical, 8)
     }
 
     private func stat(icon: String, value: Int) -> some View {
-        VStack(spacing: 4) {
+        let shape = Circle()
+        return VStack(spacing: 3) {
             Image(systemName: icon)
                 .font(.headline)
             Text(value.formatted(.number.notation(.compactName)))
                 .font(.caption2)
                 .monospacedDigit()
         }
-        .frame(width: 66, height: 66)
-        .glassContainer(cornerRadius: 14, padding: 8, shadowRadius: 10)
+        .frame(width: 60, height: 60)
+        .background(.ultraThinMaterial, in: shape)
+        .overlay(Glass.gloss(shape).allowsHitTesting(false))
+        .overlay(Glass.stroke(shape))
+        .shadow(color: .black.opacity(0.35), radius: 10, x: 0, y: 7)
+        .contentShape(shape)
     }
 }
