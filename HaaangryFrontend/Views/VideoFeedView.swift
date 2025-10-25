@@ -55,11 +55,10 @@ struct VideoFeedView: View {
                     .presentationDetents([.medium, .large])
             }
         }
-        // Place the bottom bar as a safe-area inset to prevent collisions
+        // Bottom bar pinned to the bottom-most safe area
         .safeAreaInset(edge: .bottom, spacing: 0) {
             BottomActionsBar(isMuted: $isMuted)
                 .padding(.horizontal, 12)
-                .padding(.bottom, 8)
         }
         .preferredColorScheme(.dark)
         .onChange(of: currentIndex) { _ in
@@ -77,7 +76,6 @@ struct VideoFeedView: View {
         let v = feed.videos[currentIndex]
         guard let url = URL(string: v.url) else { return }
         pool.pauseAll()
-        // Ensure the active player's mute state matches the global toggle
         let p = pool.player(for: v.id, url: url, muted: isMuted)
         p.play()
     }
@@ -117,6 +115,7 @@ struct VideoCardView: View {
                     .onTapGesture { togglePlay() }
             }
 
+            // Title and description, capped to 2 lines each, kept above control bar
             VStack {
                 Spacer()
                 HStack(alignment: .bottom) {
@@ -135,25 +134,10 @@ struct VideoCardView: View {
                             .fixedSize(horizontal: false, vertical: true)
                     }
                     .layoutPriority(1)
-
                     Spacer(minLength: 0)
                 }
                 .padding(.horizontal)
-
-                HStack {
-                    Button {
-                        isMuted.toggle()
-                        player?.isMuted = isMuted
-                        showTransientHUD()
-                    } label: {
-                        Image(systemName: isMuted ? "speaker.slash.fill" : "speaker.wave.2.fill")
-                    }
-                    .glassIconButton(size: 44)
-
-                    Spacer()
-                }
-                .padding(.horizontal)
-                .padding(.bottom, 4)
+                .padding(.bottom, BottomActionsBar.barHeight + 12)
             }
 
             RightMetaOverlay(likes: video.like_count, comments: video.comment_count)

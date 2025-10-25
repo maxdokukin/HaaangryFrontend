@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct BottomActionsBar: View {
+    static let barHeight: CGFloat = 62
+
     @Binding var isMuted: Bool
 
     @State private var showChat = false
