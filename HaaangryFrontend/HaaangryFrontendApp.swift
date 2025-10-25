@@ -1,10 +1,4 @@
-//
-//  haaangry_frontendApp.swift
-//  haaangry-frontend
-//
-//  Created by xewe on 10/25/25.
-//
-
+// HaaangryFrontendApp.swift
 //
 //  HaaangryFrontendApp.swift
 //  haaangry-frontend
@@ -25,6 +19,8 @@ struct HaaangryFrontendApp: App {
                 .environmentObject(orders)
                 .environmentObject(profile)
                 .task {
+                    // Probe once so requests with fixtures can bypass network if server is down
+                    await APIClient.shared.primeServerAvailability()
                     await feed.load()
                     await profile.load()
                 }

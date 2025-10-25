@@ -1,7 +1,8 @@
 import Foundation
 import Speech
 import AVFoundation
-
+import Combine
+ 
 final class SpeechRecognizer: NSObject, ObservableObject {
     @Published var transcript: String = ""
     private let recognizer = SFSpeechRecognizer()
