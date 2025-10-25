@@ -1,0 +1,131 @@
+haaangry: Project & Technical Overview (Hackathon-MVP)
+1) What we’re building (product vision)
+haaangry is a TikTok-style iOS app that turns food videos into one-tap orders or DIY recipes. Users vertically scroll through short, full-screen food clips. From any video:
+* Swipe right → “Order Options” sheet: top 3 restaurants, prefilled cart for the detected dish, suggested add-ons, ETA, total, and a Place Order button (mock payment via user credits).
+* Swipe left → “Recipes” view: top 3 text recipes plus top 3 YouTube links for making a similar dish.
+* Bottom actions: Chat to Order (text LLM), Talk to Order (voice → LLM), and Profile (name, default delivery address, credits, order history).
+* Right overlay shows likes and comments for the active video.
+For the hackathon MVP: videos are pre-downloaded, embeddings/descriptions already exist, delivery and payments are simulated, and the app gracefully falls back to local fixtures when the backend is unavailable.
+2) Core user flows
+1. Browse feed
+    * Vertical autoplay videos with title + description.
+    * Right overlay: likes/comments; bottom bar: Chat/Talk/Profile.
+2. Order from a video (right swipe)
+    * App calls /order/options?video_id={id}.
+    * Displays: detected intent (e.g., “Spicy Ramen”), top 3 restaurants, prefilled cart (default item inferred from intent), suggested items, order total (subtotal + delivery fee), ETA.
+    * User can change quantities, add suggested items, choose a different restaurant, and tap Place Order → POST /orders (returns “confirmed”, ETA ~30 min in MVP).
+3. Recipe discovery (left swipe)
+    * App calls /recipes?video_id={id}.
+    * Shows top 3 text recipes (titles + bullet steps) and top 3 YouTube links.
+4. Chat to Order
+    * User types requests (“spicy ramen with dumplings”).
+    * POST /llm/text → server extracts intent and returns top restaurants; optional deep link to order sheet.
+5. Talk to Order
+    * Speech-to-text (on-device transcription via SFSpeechRecognizer), then POST /llm/voice.
+    * Same response shape as /llm/text.
+6. Profile
+    * GET /profile → name, address, credits.
+    * GET /orders/history (optional in MVP) → list of past orders.
+All calls try backend first; on failure, the iOS app loads bundled JSON fixtures so the demo never blocks.
+3) Technical architecture
+Client (iOS)
+* SwiftUI + MVVM (stores/ViewModels per feature).
+* AVKit for video playback.
+* Networking: a single APIClient with request<T> using async/await.
+    * If an HTTP error or timeout occurs, the client decodes a fixture (e.g., order_options_v1.json).
+* State management: @EnvironmentObject stores: FeedStore, OrderStore, ProfileStore.
+* Voice: SFSpeechRecognizer for basic transcription (permissions in Info.plist).
+* Target: iOS 16+ (dark mode by default).
+Server (FastAPI)
+* Simple JSON endpoints with stub data; CORS enabled.
+* Pydantic models mirror the iOS models exactly to avoid mapping issues.
+* For hackathon, data can be in-memory; later, persist with Postgres.
+Why this architecture?
+* SwiftUI + MVVM is fast to iterate on under hackathon constraints.
+* A single resilient networking layer enables “online-first, offline-safe” demos.
+* FastAPI is quick to scaffold, strongly typed with Pydantic, and easy to swap for real providers later.
+4) Data model (backend)
+Entities (minimal useful set):
+* users: id, name, email, default_address_id, credits_balance_cents
+* addresses: id, user_id, line1/line2/city/state/zip, lat/lng
+* videos: id, url, thumb_url, title, description, tags[], like_count, comment_count
+* restaurants: id, name, logo_url, delivery_eta_min/max, delivery_fee_cents
+* menu_items: id, restaurant_id, name, description, price_cents, image_url, tags[]
+* orders: id, user_id, restaurant_id, status (created/confirmed/…), subtotal_cents, delivery_fee_cents, total_cents, eta_minutes, created_at
+* order_items: id, order_id, menu_item_id, name_snapshot, price_cents_snapshot, quantity
+* video_intents (helper): video_id → normalized intent (e.g., “Spicy Ramen”), primary_menu_item_id
+* recipes_cache (optional): video_id → cached top text recipes + top YouTube links
+Notes
+* For MVP, intent detection is rule-based or mocked. Later, replace with embedding search (pgvector).
+* We snapshot name/price in order_items for historical accuracy when menu prices change.
+5) API surface (MVP)
+* GET /feed → [Video]
+* GET /order/options?video_id={id} → { intent, top_restaurants[3], prefill[OrderItem], suggested_items[MenuItem[]] }
+* POST /orders (body: Order with items, calculated totals) → returns confirmed Order
+* POST /llm/text (body: { user_text, recent_video_id? }) → { intent, top_restaurants[3] }
+* POST /llm/voice (body: { transcript, recent_video_id? }) → same as above
+* GET /recipes?video_id={id} → { top_text_recipes[3], top_youtube[3] }
+* GET /profile → { user_id, name, credits_balance_cents, default_address{...} }
+* GET /orders/history → { orders: [Order] }
+Contract priorities
+* Keep payloads small and explicit; avoid optional nesting that complicates the app.
+* Use plain integers for cents to avoid floating point issues.
+* Don’t mix presentation fields with computation; the client calculates total on the fly and the server verifies.
+6) Client failover & error handling
+* Every network call tries remote first.
+* On non-2xx or timeout, APIClient falls back to a fixture (if provided).
+* UI always shows something: either real data or fixtures.
+* “Place Order” can assume success (mock) with a toast/banner if the network fails.
+* Logging: print errors in debug; avoid intrusive alerts in the demo.
+7) LLM integration points (for other LLMs you’ll use)
+Inputs:
+* video.description and video.tags[] (embedding already computed upstream).
+* User prompts (chat) or transcripts (voice).
+* Optional: user’s last few interactions, dietary preferences (future).
+Outputs (strict schema expected):
+* intent: string (short, cuisine/dish-level, e.g., “Birria Tacos”).
+* top_restaurants: [ { id, name, delivery_eta_min, delivery_eta_max, delivery_fee_cents } ]
+    * Up to 3 items, sorted by fit/ETA.
+* For /order/options, also:
+    * prefill: [OrderItem] with one best menu item (quantity=1).
+    * suggested_items: [MenuItem] (0–5 items).
+LLM guardrails:
+* If insufficient evidence, fallback to the most likely dish inferred from tags/description.
+* Keep to known restaurants/menu items (return IDs you know); if unknown, flag as “demo_synthetic”.
+* Prefer precision over creativity; short labels, no prose in fields.
+* Avoid PII and never infer user attributes.
+8) iOS UI composition & gestures
+* VideoFeedView: full-screen VideoPlayer, vertical paging feel via full-height cards.
+* RightMetaOverlay: likes/comments stack.
+* BottomActionsBar: Chat/Talk/Profile sheets.
+* Swipe detection: horizontal drag on the video card:
+    * Right (> +80pt) → present OrderOptionsSheet.
+    * Left (< −80pt) → present RecipesView.
+* OrderOptionsSheet:
+    * Intent label, horizontally scrollable restaurant chips (select 1).
+    * Cart list (inc/dec quantity), suggested items (horizontal).
+    * Total line + ETA + Place Order button.
+9) Security, privacy, and permissions (MVP stance)
+* Microphone and Speech Recognition permissions required for “Talk to Order”.
+* No real payments or third-party delivery credentials in MVP.
+* Store only non-sensitive data on-device (e.g., credits in profile payload). No secret keys in the app bundle.
+* Add Info.plist usage descriptions for clarity and App Review friendliness (if needed later).
+10) Environments, config, and tooling
+* iOS: Xcode 15+, Swift 5.9+, iOS 16 target.
+* Backend: Python 3.11, FastAPI, Uvicorn, enable CORS (allow_origins = ["*"]) for local dev.
+* Config: APIClient.baseURL points to http://127.0.0.1:8000 by default; change for LAN.
+* Fixtures: JSON files bundled under Resources/fixtures/; filenames mapped in code.
+11) Limitations (known, acceptable for demo)
+* No real Doordash integration; restaurants/menu are mocked.
+* No auth; profile is static or lightly simulated.
+* Speech accuracy varies; provide a “Type instead” pathway.
+* No background downloads/caching beyond what AVKit does by default.
+12) Roadmap (post-hackathon)
+* Real provider integrations (DoorDash/aggregators), live menus/pricing/fees.
+* Payments (Stripe) or keep “credits” with server-side ledger.
+* Sign in with Apple; user preferences (dietary, allergens).
+* Embedding search (pgvector) from video → dish → menu matching.
+* A/B test UI affordances (auto-suggest after voice intent, etc.).
+13) Demo script (90 seconds)
+Open app → ramen video plays → Swipe right → see intent, restaurants, prefilled cart → Place Order (mock success). Back → Swipe left → recipes + YouTube links. Tap Chat to Order → “birria tacos” → shows taco picks. Tap Talk to Order → speak “ramen with dumplings” → shows ramen picks. Tap Profile → name, address, credits.
+That’s the whole story: scroll → crave → order (or cook), with reliable fallbacks so the demo never breaks.
