@@ -64,7 +64,6 @@ struct VideoFeedView: View {
         let v = feed.videos[currentIndex]
         guard let url = URL(string: v.url) else { return }
         pool.pauseAll()
-        // Do not force-mute here; keep whatever the card set.
         pool.playKeepingMuteState(id: v.id, url: url, defaultMuted: false)
     }
 
@@ -93,7 +92,7 @@ struct VideoCardView: View {
 
     @State private var player: AVPlayer?
     @State private var shouldPlay = true
-    @State private var isMuted = false   // default: sound ON
+    @State private var isMuted = false
     @State private var showHUD = false
 
     var body: some View {
@@ -109,9 +108,21 @@ struct VideoCardView: View {
                 Spacer()
                 HStack(alignment: .bottom) {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text(video.title).font(.headline)
-                        Text(video.description).font(.subheadline).foregroundStyle(.secondary)
+                        Text(video.title)
+                            .font(.headline)
+                            .lineLimit(2)
+                            .truncationMode(.tail)
+                            .fixedSize(horizontal: false, vertical: true)
+
+                        Text(video.description)
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(2)
+                            .truncationMode(.tail)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
+                    .layoutPriority(1)
+
                     Spacer()
                     RightMetaOverlay(likes: video.like_count, comments: video.comment_count)
                 }
@@ -147,7 +158,6 @@ struct VideoCardView: View {
         }
         .onAppear {
             if let url = URL(string: video.url) {
-                // Create or reuse and apply the current mute preference.
                 player = pool.player(for: video.id, url: url, muted: isMuted)
             }
             syncPlayback()
