@@ -9,11 +9,12 @@ struct VoiceToOrderView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Say what you’re craving…").font(.headline)
+
             Text(speech.transcript.isEmpty ? "…" : speech.transcript)
                 .frame(maxWidth: .infinity, minHeight: 80, alignment: .topLeading)
-                .padding().background(Color.gray.opacity(0.15)).cornerRadius(8)
+                .glassContainer(cornerRadius: 14, padding: 12, shadowRadius: 6)
 
-            HStack {
+            HStack(spacing: 10) {
                 Button(isRecording ? "Stop" : "Record") {
                     if isRecording {
                         speech.stop()
@@ -23,6 +24,8 @@ struct VoiceToOrderView: View {
                         isRecording = true
                     }
                 }
+                .glassButton()
+
                 Button("Analyze") {
                     Task {
                         struct Req: Encodable { let transcript: String }
@@ -33,15 +36,24 @@ struct VoiceToOrderView: View {
                         }
                     }
                 }
+                .glassButton()
             }
 
             if let intent {
                 Text("Detected intent: \(intent)").bold()
-                ForEach(top) { r in
-                    Text("• \(r.name) (\(r.delivery_eta_min)-\(r.delivery_eta_max) min)")
+                    .glassContainer(cornerRadius: 12, padding: 10, shadowRadius: 6)
+                VStack(spacing: 8) {
+                    ForEach(top) { r in
+                        HStack {
+                            Text(r.name).bold()
+                            Spacer()
+                            Text("\(r.delivery_eta_min)-\(r.delivery_eta_max) min").font(.caption).foregroundStyle(.secondary)
+                        }
+                        .glassContainer(cornerRadius: 12, padding: 10, shadowRadius: 6)
+                    }
                 }
             }
-            Spacer()
+            Spacer(minLength: 0)
         }
         .padding()
     }

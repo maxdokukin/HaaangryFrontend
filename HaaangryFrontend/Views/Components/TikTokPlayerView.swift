@@ -33,15 +33,16 @@ struct TikTokPlayerView: UIViewRepresentable {
 
     func makeCoordinator() -> Coordinator { Coordinator() }
 
+    // replace the Coordinator.attachLoopObserver with this idempotent version
     final class Coordinator {
         private var token: NSObjectProtocol?
 
         func attachLoopObserver(for player: AVPlayer) {
-            // Reattach if item changed
             if let token { NotificationCenter.default.removeObserver(token) }
+            guard let item = player.currentItem else { return }
             token = NotificationCenter.default.addObserver(
                 forName: .AVPlayerItemDidPlayToEndTime,
-                object: player.currentItem,
+                object: item,
                 queue: .main
             ) { _ in
                 player.seek(to: .zero)
@@ -49,8 +50,7 @@ struct TikTokPlayerView: UIViewRepresentable {
             }
         }
 
-        deinit {
-            if let token { NotificationCenter.default.removeObserver(token) }
-        }
+        deinit { if let token { NotificationCenter.default.removeObserver(token) } }
     }
+
 }

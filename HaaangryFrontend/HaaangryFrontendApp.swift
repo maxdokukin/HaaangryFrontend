@@ -12,6 +12,10 @@ struct HaaangryFrontendApp: App {
     @StateObject var orders = OrderStore()
     @StateObject var profile = ProfileStore()
 
+    init() {
+        AudioSession.configurePlayback()
+    }
+
     var body: some Scene {
         WindowGroup {
             RootView()
@@ -19,7 +23,6 @@ struct HaaangryFrontendApp: App {
                 .environmentObject(orders)
                 .environmentObject(profile)
                 .task {
-                    // Probe once so requests with fixtures can bypass network if server is down
                     await APIClient.shared.primeServerAvailability()
                     await feed.load()
                     await profile.load()
