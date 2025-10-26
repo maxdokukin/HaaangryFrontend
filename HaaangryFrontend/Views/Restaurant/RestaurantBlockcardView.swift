@@ -26,6 +26,7 @@ struct RestaurantBlockCard: View {
     }
 
     private var header: some View {
+    VStack(alignment: .leading, spacing: 8) {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
                 Text(block.restaurantName)
@@ -39,7 +40,7 @@ struct RestaurantBlockCard: View {
                 .foregroundStyle(.tertiary)
                 .font(.caption)
         }
-
+        
         if let menuURL = block.menuURL, let url = URL(string: menuURL) {
             Link(destination: url) {
                 HStack {
@@ -49,9 +50,9 @@ struct RestaurantBlockCard: View {
                 .font(.subheadline)
                 .foregroundStyle(.blue)
             }
-            .padding(.top, 8)
         }
     }
+}
 
     private func itemRow(_ item: APIMenuItem) -> some View {
         Button {

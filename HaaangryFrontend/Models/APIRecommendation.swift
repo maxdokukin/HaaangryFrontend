@@ -33,14 +33,14 @@ public struct APIRestaurantBlock: Codable, Identifiable, Hashable {
 
     public let restaurantId: String
     public let restaurantName: String
-    public let menuURL: String?  // ADD THIS
+    public let menuURL: String?  
     public let items: [APIMenuItem]
     public let avgPriceCents: Int
 
     enum CodingKeys: String, CodingKey {
         case restaurantId = "restaurant_id"
         case restaurantName = "restaurant_name"
-        case menuURL = "menu_url"  // ADD THIS
+        case menuURL = "menu_url"  
         case items
         case avgPriceCents = "avg_price_cents"
     }
