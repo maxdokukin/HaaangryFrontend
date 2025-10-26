@@ -4,7 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="26f69b67-4412-49df-bd63-a0f8cac8cd3a" name="Changes" comment="advanced order confiramtion" />
+    <list default="true" id="26f69b67-4412-49df-bd63-a0f8cac8cd3a" name="Changes" comment="added order hist to user prof (local)">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HaaangryFrontend.xcodeproj/project.xcworkspace/xcuserdata/xewe.xcuserdatad/UserInterfaceState.xcuserstate" beforeDir="false" afterPath="$PROJECT_DIR$/HaaangryFrontend.xcodeproj/project.xcworkspace/xcuserdata/xewe.xcuserdatad/UserInterfaceState.xcuserstate" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HaaangryFrontend/Models/APIRecommendation.swift" beforeDir="false" afterPath="$PROJECT_DIR$/HaaangryFrontend/Models/APIRecommendation.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HaaangryFrontend/Views/Restaurant/RestaurantBlockcardView.swift" beforeDir="false" afterPath="$PROJECT_DIR$/HaaangryFrontend/Views/Restaurant/RestaurantBlockcardView.swift" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -156,7 +161,23 @@
       <option name="project" value="LOCAL" />
       <updated>1761466590355</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="order confirmation fnc done">
+      <option name="closed" value="true" />
+      <created>1761466680071</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1761466680071</updated>
+    </task>
+    <task id="LOCAL-00012" summary="added order hist to user prof (local)">
+      <option name="closed" value="true" />
+      <created>1761467225465</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1761467225465</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -184,6 +205,8 @@
     <MESSAGE value="RESOLVED MERGE INCONSISTENCIES" />
     <MESSAGE value="basic order confirmation add" />
     <MESSAGE value="advanced order confiramtion" />
-    <option name="LAST_COMMIT_MESSAGE" value="advanced order confiramtion" />
+    <MESSAGE value="order confirmation fnc done" />
+    <MESSAGE value="added order hist to user prof (local)" />
+    <option name="LAST_COMMIT_MESSAGE" value="added order hist to user prof (local)" />
   </component>
 </project>

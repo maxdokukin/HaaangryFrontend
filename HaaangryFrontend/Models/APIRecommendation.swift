@@ -1,3 +1,4 @@
+// Models/APIRecommendation.swift
 import Foundation
 
 public struct APIMenuItem: Codable, Identifiable, Hashable {
@@ -31,16 +32,23 @@ public struct APIRestaurantBlock: Codable, Identifiable, Hashable {
     public let restaurantName: String
     public let items: [APIMenuItem]
     public let avgPriceCents: Int
+    public let menuLink: String?              // NEW
 
     enum CodingKeys: String, CodingKey {
         case restaurantId = "restaurant_id"
         case restaurantName = "restaurant_name"
         case items
         case avgPriceCents = "avg_price_cents"
+        case menuLink = "menu_url"
     }
 
     public var displayAvgPrice: String {
         String(format: "$%.2f", Double(avgPriceCents) / 100.0)
+    }
+
+    public var menuURL: URL? {
+        guard let s = menuLink, let u = URL(string: s) else { return nil }
+        return u
     }
 }
 

@@ -1,3 +1,4 @@
+// Views/Restaurant/RestaurantBlockCard.swift
 import SwiftUI
 
 struct RestaurantBlockCard: View {
@@ -7,7 +8,7 @@ struct RestaurantBlockCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            header
+            header                          // clickable when menu_link exists
                 .padding()
                 .background(Color(.secondarySystemBackground))
 
@@ -25,7 +26,24 @@ struct RestaurantBlockCard: View {
         .shadow(color: .black.opacity(0.08), radius: 8, x: 0, y: 2)
     }
 
+    // MARK: - Header
+
     private var header: some View {
+        Group {
+            if let url = block.menuURL {
+                Link(destination: url) {
+                    headerContents
+                }
+                .buttonStyle(.plain)
+                .contentShape(Rectangle())
+                .accessibilityLabel(Text("\(block.restaurantName) menu"))
+            } else {
+                headerContents
+            }
+        }
+    }
+
+    private var headerContents: some View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
                 Text(block.restaurantName)
@@ -40,6 +58,8 @@ struct RestaurantBlockCard: View {
                 .font(.caption)
         }
     }
+
+    // MARK: - Item row
 
     private func itemRow(_ item: APIMenuItem) -> some View {
         Button {
@@ -107,7 +127,8 @@ struct RestaurantBlockCard_Previews: PreviewProvider {
                             APIMenuItem(id: "r1::lasagna", restaurantId: "r1", name: "Lasagna Ferrarese", description: nil, priceCents: 2800, imageURL: nil, tags: ["italian"]),
                             APIMenuItem(id: "r1::gnocchi", restaurantId: "r1", name: "Gnocchi al Pesto", description: "Basil pesto, parmigiano", priceCents: 2700, imageURL: nil, tags: ["vegetarian"])
                         ],
-                        avgPriceCents: 2633
+                        avgPriceCents: 2633,
+                        menuLink: "https://example.com/menu"
                     ),
                     onItemTapped: { _, _ in }
                 )
