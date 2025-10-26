@@ -10,7 +10,7 @@ final class OrderStore: ObservableObject {
     @Published var totalCents: Int = 0
 
     /// Always safe to call. Clears stale state when video changes.
-    func fetchOptions(for videoId: String, force: Bool = false) async {
+    func fetchOptions(for videoId: String, title: String? = nil, force: Bool = false) async {
         if force || orderOptions?.video_id != videoId {
             // Reset UI while loading new video’s options
             self.orderOptions = nil
@@ -20,7 +20,7 @@ final class OrderStore: ObservableObject {
             self.totalCents = 0
         }
 
-        if let opts: OrderOptions = await APIClient.shared.request(.orderOptions(videoId: videoId), fallback: .orderOptionsV1) {
+        if let opts: OrderOptions = await APIClient.shared.request(.orderOptions(videoId: videoId, title: title), fallback: .orderOptionsV1) {
             self.orderOptions = opts
             self.currentCart = opts.prefill
             self.selectedRestaurant = opts.top_restaurants.first

@@ -48,14 +48,13 @@ struct VideoFeedView: View {
         .sheet(item: $sheet) { route in
             switch route {
             case .order(let v):
-                OrderOptionsSheet(videoId: v.id)
+                OrderOptionsSheet(video: v)
                     .presentationDetents([.medium, .large])
             case .recipes(let v):
-                RecipesView(videoId: v.id)
+                RecipesView(video: v)
                     .presentationDetents([.medium, .large])
             }
         }
-        // Bottom bar pinned to the bottom-most safe area
         .safeAreaInset(edge: .bottom, spacing: 0) {
             BottomActionsBar(isMuted: $isMuted)
                 .padding(.horizontal, 12)

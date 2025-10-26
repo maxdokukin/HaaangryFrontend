@@ -4,6 +4,7 @@ enum FixtureFile: String {
     case feed = "feed"
     case orderOptionsV1 = "order_options_v1"
     case recipesV1 = "recipes_v1"
+    case recipesLinksV1 = "recipes_links_v1"
     case profile = "profile"
 }
 

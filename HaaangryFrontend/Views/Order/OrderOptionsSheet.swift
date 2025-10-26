@@ -3,11 +3,11 @@ import SwiftUI
 struct OrderOptionsSheet: View {
     @EnvironmentObject var orders: OrderStore
     @EnvironmentObject var profile: ProfileStore
-    let videoId: String
+    let video: Video
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            if let opts = orders.orderOptions, opts.video_id == videoId {
+            if let opts = orders.orderOptions, opts.video_id == video.id {
                 Text("You’re craving: \(opts.intent)")
                     .font(.title3)
                     .bold()
@@ -109,13 +109,12 @@ struct OrderOptionsSheet: View {
                 .glassButtonProminent()
                 .padding(.top, 6)
             } else {
-                // Loading state while fetch runs
                 HStack { Spacer(); ProgressView(); Spacer() }
             }
         }
         .padding()
-        .task(id: videoId) {
-            await orders.fetchOptions(for: videoId, force: true)
+        .task(id: video.id) {
+            await orders.fetchOptions(for: video.id, title: video.title, force: true)
         }
     }
 

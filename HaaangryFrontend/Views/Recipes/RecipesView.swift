@@ -1,49 +1,59 @@
 import SwiftUI
-import SafariServices
 
 struct RecipesView: View {
-    let videoId: String
-    @State private var data: RecipeResult?
+    let video: Video
+
+    @State private var data: RecipeLinksResult?
+    @State private var isLoading = false
+    @State private var lastLoadedId: String?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             if let data {
-                Text("Top Text Recipes").font(.headline)
+                Text("Top Recipe Links").font(.headline)
 
-                List {
-                    ForEach(data.top_text_recipes) { r in
-                        VStack(alignment: .leading, spacing: 6) {
-                            Text(r.title).bold()
-                            ForEach(r.steps, id: \.self) { s in Text("• \(s)") }
-                        }
-                        .glassContainer(cornerRadius: 12, padding: 12, shadowRadius: 6)
-                        .listRowSeparator(.hidden)
-                        .listRowBackground(Color.clear)
-                    }
-                }
-                .listStyle(.plain)
-                .scrollContentBackground(.hidden)
-                .background(Color.clear)
-
-                Text("Top YouTube").font(.headline).padding(.top, 4)
                 VStack(alignment: .leading, spacing: 8) {
-                    ForEach(data.top_youtube, id: \.self) { url in
-                        Link(destination: URL(string: url)!) {
-                            Label(url, systemImage: "play.rectangle")
-                                .lineLimit(1)
+                    ForEach(data.links) { link in
+                        Link(destination: URL(string: link.url)!) {
+                            Label(link.title, systemImage: "link")
+                                .lineLimit(2)
                                 .truncationMode(.middle)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                         }
                         .glassButton()
                     }
                 }
+
+                if !data.query.isEmpty && data.query != "N/A" {
+                    Text("Query: \(data.query)")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .padding(.top, 6)
+                }
             } else {
                 HStack { Spacer(); ProgressView(); Spacer() }
             }
         }
         .padding()
-        .task(id: videoId) {
-            data = await APIClient.shared.request(.recipes(videoId: videoId), fallback: .recipesV1)
-        }
+        .onAppear { Task { await loadIfNeeded() } }
+        .onChange(of: video.id) { _ in Task { await load(force: true) } }
+    }
+
+    // MARK: - Loading
+
+    private func loadIfNeeded() async {
+        await load(force: lastLoadedId != video.id || data == nil)
+    }
+
+    private func load(force: Bool) async {
+        guard force else { return }
+        isLoading = true
+        defer { isLoading = false }
+        lastLoadedId = video.id
+        print("[Recipes] → GET /recipes?video_id=\(video.id)")
+        data = await APIClient.shared.request(
+            .recipes(videoId: video.id, title: video.title, description: video.description),
+            fallback: .recipesLinksV1
+        )
     }
 }
