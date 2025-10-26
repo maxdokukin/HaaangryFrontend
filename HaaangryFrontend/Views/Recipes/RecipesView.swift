@@ -58,7 +58,15 @@ struct RecipesView: View {
                         .padding(.top, 6)
                 }
             } else {
-                HStack { Spacer(); ProgressView(); Spacer() }
+                VStack(spacing: 8) {
+                    Spacer()
+                    ProgressView()
+                    Text("Looking up recipe articles and video recipes…")
+                        .font(.body) // match restaurant suggestions loading font
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                }
+                .frame(maxWidth: .infinity)
             }
         }
         .padding()

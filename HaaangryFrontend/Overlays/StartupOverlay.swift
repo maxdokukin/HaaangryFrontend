@@ -28,7 +28,7 @@ struct StartupOverlay: View {
                             Image(systemName: "arrow.left")
                                 .offset(x: nudgeLeft ? -6 : 0)
                                 .animation(.easeInOut(duration: 0.9).repeatForever(autoreverses: true), value: nudgeLeft)
-                            Text("LEFT TO LEARN MORE")
+                            Text("SWIPE LEFT FOR RECIPES")
                         }
                         .hintCapsule()
 

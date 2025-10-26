@@ -22,7 +22,7 @@ fi
 # ─── Traverse and dump ────────────────────────────────────────────────────────
 
 # Use NUL-delimited output so we handle all possible filenames safely
-find . -print0 | while IFS= read -r -d '' path; do
+find . -type f -iname '*.swift' -print0 | while IFS= read -r -d '' path; do
   # strip leading "./" so paths read nicely
   rel="${path#./}"
 
