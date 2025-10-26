@@ -80,3 +80,86 @@ struct AnyEncodable: Encodable {
     }
     func encode(to encoder: Encoder) throws { try encodeFunc(encoder) }
 }
+
+// MARK: - Recommendations + Confirm (appended)
+
+private struct _RecommendIn: Encodable { let video_id: String }
+
+public struct APIConfirmResponse: Codable {
+    public let status: String
+    public let message: String?
+}
+
+private struct _OrderItemSnapshot: Encodable {
+    let menu_item_id: String
+    let name_snapshot: String
+    let price_cents_snapshot: Int
+    let quantity: Int
+}
+
+private struct _ConfirmIn: Encodable {
+    let restaurant_id: String
+    let item: _OrderItemSnapshot
+}
+
+extension APIClient {
+
+    /// POST /recommend
+    /// Body: { "video_id": "<id>" }
+    /// Response: APIRecommendOut
+    public func recommend(videoID: String) async -> APIRecommendOut? {
+        await requestPath("/recommend", method: "POST", body: _RecommendIn(video_id: videoID)) as APIRecommendOut?
+    }
+
+    /// POST /confirm
+    /// Body: { "restaurant_id": "...", "item": { menu_item_id, name_snapshot, price_cents_snapshot, quantity } }
+    /// Response: { "status": "ok", "message": "..." }
+    public func confirm(restaurantId: String, item: APIMenuItem, quantity: Int = 1) async -> APIConfirmResponse? {
+        let snap = _OrderItemSnapshot(
+            menu_item_id: item.id,
+            name_snapshot: item.name,
+            price_cents_snapshot: item.priceCents,
+            quantity: max(1, quantity)
+        )
+        let payload = _ConfirmIn(restaurant_id: restaurantId, item: snap)
+        return await requestPath("/confirm", method: "POST", body: payload)
+    }
+
+    // Raw-path helper to avoid touching Endpoint definitions.
+    // Raw-path helper to avoid touching Endpoint definitions.
+    private func requestPath<T: Decodable>(
+        _ path: String,
+        method: String,
+        body: Encodable? = nil,
+        fallback: FixtureFile? = nil
+    ) async -> T? {
+        do {
+            var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false)
+            components?.path = path
+            guard let url = components?.url else { throw URLError(.badURL) }
+
+            var urlRequest = URLRequest(url: url)
+            urlRequest.httpMethod = method
+            urlRequest.addValue("application/json", forHTTPHeaderField: "Accept")
+            if let body = body {
+                urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
+                urlRequest.httpBody = try JSONEncoder().encode(AnyEncodable(body))
+            }
+
+            print("[API] →", urlRequest.httpMethod ?? "GET", url.absoluteString)
+            let (data, response) = try await session.data(for: urlRequest)
+            guard let http = response as? HTTPURLResponse, 200..<300 ~= http.statusCode else {
+                throw URLError(.badServerResponse)
+            }
+            return try jsonDecoder.decode(T.self, from: data)
+        } catch {
+            print("[API] requestPath failed \(path):", error.localizedDescription)
+            if let fallback = fallback, let v: T = Fixtures.load(fallback, as: T.self) {
+                print("[API] Using fixture for", path)
+                return v
+            }
+            return nil
+        }
+    }
+}
+
