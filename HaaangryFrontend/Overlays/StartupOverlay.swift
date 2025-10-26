@@ -47,6 +47,10 @@ struct StartupOverlay: View {
                     .padding(.bottom, 28)
                 }
             }
+            .contentShape(Rectangle()) // make whole overlay tappable
+            .onTapGesture {
+                withAnimation(.easeOut(duration: 0.35)) { isVisible = false }
+            }
             .onAppear {
                 withAnimation(.easeInOut(duration: 0.9).repeatForever(autoreverses: true)) {
                     breathe = true
