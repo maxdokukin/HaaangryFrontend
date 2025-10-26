@@ -81,8 +81,12 @@ struct VideoFeedView: View {
             playCurrent()
         }
         .onReceive(NotificationCenter.default.publisher(for: .orderConfirmed)) { note in
+            // Close any right-swipe sheet (recommendations/order) before showing receipt.
             if let c = note.object as? OrderConfirmation {
-                confirmation = c
+                sheet = nil
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    confirmation = c
+                }
             }
         }
     }
