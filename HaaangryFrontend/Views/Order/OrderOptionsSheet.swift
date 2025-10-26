@@ -87,11 +87,26 @@ struct OrderOptionsSheet: View {
 
                 Divider().padding(.vertical, 6)
 
+                // Pricing summary with dynamic subtotal and free-delivery switch
+                let subtotal = orders.currentCart.reduce(0) { $0 + $1.price_cents_snapshot * $1.quantity }
+                let baseFee = orders.selectedRestaurant?.delivery_fee_cents ?? 299
+                let fee = orders.freeDelivery ? 0 : baseFee
+
+                Toggle("Free delivery", isOn: $orders.freeDelivery)
+                    .onChange(of: orders.freeDelivery) { _ in orders.recalcTotals() }
+
+                HStack { Text("Subtotal"); Spacer(); Text(price(subtotal)).bold() }
+                HStack {
+                    Text("Delivery")
+                    Spacer()
+                    Text(orders.freeDelivery ? "Free" : price(baseFee)).bold()
+                }
                 HStack {
                     Text("Total")
                     Spacer()
                     Text(price(orders.totalCents)).bold()
                 }
+
                 if let r = orders.selectedRestaurant {
                     Text("ETA: ~\(r.delivery_eta_min)-\(r.delivery_eta_max) min")
                         .font(.caption)
@@ -118,14 +133,12 @@ struct OrderOptionsSheet: View {
     }
 
     private func placeOrderAndShowConfirmation() async {
-        // Best-effort POST, ignore result for demo reliability.
         if let userId = profile.profile?.user_id {
             _ = await orders.placeOrder(userId: userId)
         }
 
         guard let receipt = buildConfirmation() else { return }
 
-        // Dismiss current sheet, then announce confirmation.
         dismiss()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
             NotificationCenter.default.post(name: .orderConfirmed, object: receipt)
@@ -142,7 +155,7 @@ struct OrderOptionsSheet: View {
             )
         }
         let subtotal = orders.currentCart.reduce(0) { $0 + $1.price_cents_snapshot * $1.quantity }
-        let fee = r.delivery_fee_cents
+        let fee = orders.freeDelivery ? 0 : r.delivery_fee_cents
         let total = subtotal + fee
         let eta = max(r.delivery_eta_min, min(r.delivery_eta_max, orders.etaMinutes > 0 ? orders.etaMinutes : r.delivery_eta_min + (r.delivery_eta_max - r.delivery_eta_min)/2))
 

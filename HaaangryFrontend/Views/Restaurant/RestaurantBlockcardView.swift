@@ -2,7 +2,8 @@ import SwiftUI
 
 struct RestaurantBlockCard: View {
     let block: APIRestaurantBlock
-    let onItemTapped: (APIMenuItem) -> Void
+    // Changed: pass both the block and the tapped item
+    let onItemTapped: (APIRestaurantBlock, APIMenuItem) -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -42,7 +43,7 @@ struct RestaurantBlockCard: View {
 
     private func itemRow(_ item: APIMenuItem) -> some View {
         Button {
-            onItemTapped(item)
+            onItemTapped(block, item)
         } label: {
             HStack(alignment: .top, spacing: 12) {
                 VStack(alignment: .leading, spacing: 4) {
@@ -108,7 +109,7 @@ struct RestaurantBlockCard_Previews: PreviewProvider {
                         ],
                         avgPriceCents: 2633
                     ),
-                    onItemTapped: { _ in }
+                    onItemTapped: { _, _ in }
                 )
             }
             .padding()

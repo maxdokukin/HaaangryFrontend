@@ -9,6 +9,7 @@ final class OrderStore: ObservableObject {
     @Published var selectedRestaurant: Restaurant?
     @Published var etaMinutes: Int = 0
     @Published var totalCents: Int = 0
+    @Published var freeDelivery: Bool = false   // NEW
 
     /// Always safe to call. Clears stale state when video changes.
     func fetchOptions(for videoId: String, title: String? = nil, force: Bool = false) async {
@@ -19,6 +20,7 @@ final class OrderStore: ObservableObject {
             self.selectedRestaurant = nil
             self.etaMinutes = 0
             self.totalCents = 0
+            self.freeDelivery = false
         }
 
         if let opts: OrderOptions = await APIClient.shared.request(.orderOptions(videoId: videoId, title: title), fallback: .orderOptionsV1) {
@@ -44,14 +46,16 @@ final class OrderStore: ObservableObject {
 
     func dec(_ id: String) {
         if let idx = currentCart.firstIndex(where: { $0.menu_item_id == id }) {
-            currentCart[idx].quantity = max(1, currentCart[idx].quantity - 1)
+            currentCart[idx].quantity = max(0, currentCart[idx].quantity - 1)
             recalcTotals()
         }
+        currentCart.removeAll { $0.quantity == 0 }
     }
 
     func recalcTotals() {
         let subtotal = currentCart.reduce(0) { $0 + $1.price_cents_snapshot * $1.quantity }
-        let fee = selectedRestaurant?.delivery_fee_cents ?? 299
+        let baseFee = selectedRestaurant?.delivery_fee_cents ?? 299
+        let fee = freeDelivery ? 0 : baseFee
         totalCents = subtotal + fee
         etaMinutes = 30
     }
@@ -59,7 +63,7 @@ final class OrderStore: ObservableObject {
     func placeOrder(userId: String) async -> Order? {
         guard let restaurant = selectedRestaurant else { return nil }
         let subtotal = currentCart.reduce(0) { $0 + $1.price_cents_snapshot * $1.quantity }
-        let fee = restaurant.delivery_fee_cents
+        let fee = freeDelivery ? 0 : restaurant.delivery_fee_cents
         let body = Order(
             id: "temp", user_id: userId, restaurant_id: restaurant.id,
             status: "created", items: currentCart,

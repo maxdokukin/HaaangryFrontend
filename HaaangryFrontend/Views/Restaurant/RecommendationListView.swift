@@ -6,7 +6,7 @@ struct RecommendationListView: View {
     @State private var recommendations: [APIRestaurantBlock] = []
     @State private var isLoading = false
     @State private var errorMessage: String?
-    @State private var selection: SelectedItem?
+    @State private var selection: SelectedBlock?
 
     var body: some View {
         Group {
@@ -24,9 +24,10 @@ struct RecommendationListView: View {
         .sheet(item: $selection) { s in
             NavigationStack {
                 ConfirmView(
-                    restaurantId: s.restaurantId,
-                    restaurantName: s.restaurantName,
-                    item: s.item
+                    restaurantId: s.block.restaurantId,
+                    restaurantName: s.block.restaurantName,
+                    items: s.block.items,
+                    preselectedItemId: s.preselectedItemId
                 )
             }
         }
@@ -36,12 +37,8 @@ struct RecommendationListView: View {
         ScrollView {
             LazyVStack(spacing: 16) {
                 ForEach(recommendations) { block in
-                    RestaurantBlockCard(block: block) { item in
-                        selection = SelectedItem(
-                            restaurantId: block.restaurantId,
-                            restaurantName: block.restaurantName,
-                            item: item
-                        )
+                    RestaurantBlockCard(block: block) { blk, tapped in
+                        selection = SelectedBlock(block: blk, preselectedItemId: tapped.id)
                     }
                 }
             }
@@ -78,11 +75,10 @@ struct RecommendationListView: View {
     }
 }
 
-private struct SelectedItem: Identifiable {
+private struct SelectedBlock: Identifiable {
     let id = UUID()
-    let restaurantId: String
-    let restaurantName: String
-    let item: APIMenuItem
+    let block: APIRestaurantBlock
+    let preselectedItemId: String
 }
 
 #if DEBUG
