@@ -1,4 +1,5 @@
 // Views/Recipes/RecipesView.swift
+// Views/Recipes/RecipesView.swift
 import SwiftUI
 
 struct RecipesView: View {
@@ -11,17 +12,42 @@ struct RecipesView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             if let data {
-                Text("Top Recipe Links").font(.headline)
+                let reads = data.links.filter { $0.kind == .read }
+                let watches = data.links.filter { $0.kind == .watch }
 
-                VStack(alignment: .leading, spacing: 8) {
-                    ForEach(data.links) { link in
-                        Link(destination: URL(string: link.url)!) {
-                            Label(link.title, systemImage: "link")
-                                .lineLimit(2)
-                                .truncationMode(.middle)
-                                .frame(maxWidth: .infinity, alignment: .leading)
+                Text("Recipe Links").font(.headline)
+
+                if reads.isEmpty == false {
+                    Text("READ").bold().padding(.top, 2)
+                    VStack(alignment: .leading, spacing: 8) {
+                        ForEach(reads) { link in
+                            if let url = URL(string: link.url) {
+                                Link(destination: url) {
+                                    Label(link.displayTitle, systemImage: "book.fill")
+                                        .lineLimit(2)
+                                        .truncationMode(.middle)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                }
+                                .glassButton()
+                            }
                         }
-                        .glassButton()
+                    }
+                }
+
+                if watches.isEmpty == false {
+                    Text("WATCH").bold().padding(.top, 6)
+                    VStack(alignment: .leading, spacing: 8) {
+                        ForEach(watches) { link in
+                            if let url = URL(string: link.url) {
+                                Link(destination: url) {
+                                    Label(link.displayTitle, systemImage: "play.rectangle.fill")
+                                        .lineLimit(2)
+                                        .truncationMode(.middle)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                }
+                                .glassButton()
+                            }
+                        }
                     }
                 }
 
@@ -54,7 +80,8 @@ struct RecipesView: View {
         print("[Recipes] → GET /recipes?video_id=\(video.id)")
         data = await APIClient.shared.request(
             .recipes(videoId: video.id, title: video.title, description: video.description),
-            fallback: .recipesLinksV1
+            // Use existing fixture filename present in the bundle.
+            fallback: .recipesV1
         )
     }
 }
