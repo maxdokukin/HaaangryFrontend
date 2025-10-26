@@ -8,7 +8,7 @@ struct VoiceToOrderView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Say what you’re craving…").font(.headline)
+            Text("Feelin haaangry?…").font(.headline)
 
             Text(speech.transcript.isEmpty ? "…" : speech.transcript)
                 .frame(maxWidth: .infinity, minHeight: 80, alignment: .topLeading)

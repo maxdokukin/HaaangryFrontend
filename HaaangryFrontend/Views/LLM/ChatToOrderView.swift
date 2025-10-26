@@ -25,7 +25,7 @@ struct ChatToOrderView: View {
                         }
                     }
                 } else {
-                    Text("Tell me what you feel like eating…")
+                    Text("Feelin haaangry?…")
                         .foregroundStyle(.secondary)
                         .glassContainer(cornerRadius: 12, padding: 10, shadowRadius: 4)
                 }
