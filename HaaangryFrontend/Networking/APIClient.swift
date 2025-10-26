@@ -32,10 +32,20 @@ final class APIClient {
 
     func primeServerAvailability() async { /* optional no-op now */ }
 
+    private func makeURL(for endpoint: Endpoint) -> URL? {
+        var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false)
+        components?.path = endpoint.path
+        if let items = endpoint.queryItems, items.isEmpty == false {
+            components?.queryItems = items
+        }
+        return components?.url
+    }
+
     /// Always try network first. Fallback to fixture on error.
     func request<T: Decodable>(_ endpoint: Endpoint, body: Encodable? = nil, fallback: FixtureFile? = nil) async -> T? {
         do {
-            var urlRequest = URLRequest(url: baseURL.appendingPathComponent(endpoint.path))
+            guard let url = makeURL(for: endpoint) else { throw URLError(.badURL) }
+            var urlRequest = URLRequest(url: url)
             urlRequest.httpMethod = endpoint.method
             urlRequest.addValue("application/json", forHTTPHeaderField: "Accept")
             if let body = body {
@@ -43,7 +53,7 @@ final class APIClient {
                 urlRequest.httpBody = try JSONEncoder().encode(AnyEncodable(body))
             }
 
-            print("[API] →", urlRequest.httpMethod ?? "GET", urlRequest.url!.absoluteString)
+            print("[API] →", urlRequest.httpMethod ?? "GET", url.absoluteString)
             let (data, response) = try await session.data(for: urlRequest)
             guard let http = response as? HTTPURLResponse, 200..<300 ~= http.statusCode else {
                 throw URLError(.badServerResponse)
@@ -65,6 +75,8 @@ final class APIClient {
 // Helper to encode arbitrary Encodable
 struct AnyEncodable: Encodable {
     private let encodeFunc: (Encoder) throws -> Void
-    init(_ encodable: Encodable) { self.encodeFunc = encodable.encode }
+    init(_ encodable: Encodable) {
+        self.encodeFunc = { encoder in try encodable.encode(to: encoder) }
+    }
     func encode(to encoder: Encoder) throws { try encodeFunc(encoder) }
 }

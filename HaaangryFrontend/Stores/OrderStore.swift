@@ -1,3 +1,4 @@
+// Stores/OrderStore.swift
 import Foundation
 import Combine
 
@@ -48,7 +49,7 @@ final class OrderStore: ObservableObject {
         }
     }
 
-    private func recalcTotals() {
+    func recalcTotals() {
         let subtotal = currentCart.reduce(0) { $0 + $1.price_cents_snapshot * $1.quantity }
         let fee = selectedRestaurant?.delivery_fee_cents ?? 299
         totalCents = subtotal + fee
@@ -65,6 +66,7 @@ final class OrderStore: ObservableObject {
             subtotal_cents: subtotal, delivery_fee_cents: fee,
             total_cents: subtotal + fee, eta_minutes: 0
         )
-        return await APIClient.shared.request(.createOrder, body: body, fallback: nil) as Order?
+        let placed: Order? = await APIClient.shared.request(.createOrder, body: body, fallback: nil)
+        return placed
     }
 }

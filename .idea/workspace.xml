@@ -4,16 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="26f69b67-4412-49df-bd63-a0f8cac8cd3a" name="Changes" comment="">
+    <list default="true" id="26f69b67-4412-49df-bd63-a0f8cac8cd3a" name="Changes" comment="fixing requests">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/HaaangryFrontend.xcodeproj/project.xcworkspace/xcuserdata/xewe.xcuserdatad/UserInterfaceState.xcuserstate" beforeDir="false" afterPath="$PROJECT_DIR$/HaaangryFrontend.xcodeproj/project.xcworkspace/xcuserdata/xewe.xcuserdatad/UserInterfaceState.xcuserstate" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/HaaangryFrontend/Models/RecipeModels.swift" beforeDir="false" afterPath="$PROJECT_DIR$/HaaangryFrontend/Models/RecipeModels.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HaaangryFrontend/Networking/APIClient.swift" beforeDir="false" afterPath="$PROJECT_DIR$/HaaangryFrontend/Networking/APIClient.swift" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/HaaangryFrontend/Networking/Endpoint.swift" beforeDir="false" afterPath="$PROJECT_DIR$/HaaangryFrontend/Networking/Endpoint.swift" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HaaangryFrontend/Networking/Fixtures.swift" beforeDir="false" afterPath="$PROJECT_DIR$/HaaangryFrontend/Networking/Fixtures.swift" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HaaangryFrontend/Resources/fixtures/recipes_v1.json" beforeDir="false" afterPath="$PROJECT_DIR$/HaaangryFrontend/Resources/fixtures/recipes_v1.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/HaaangryFrontend/Stores/OrderStore.swift" beforeDir="false" afterPath="$PROJECT_DIR$/HaaangryFrontend/Stores/OrderStore.swift" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/HaaangryFrontend/Views/Order/OrderOptionsSheet.swift" beforeDir="false" afterPath="$PROJECT_DIR$/HaaangryFrontend/Views/Order/OrderOptionsSheet.swift" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/HaaangryFrontend/Views/Recipes/RecipesView.swift" beforeDir="false" afterPath="$PROJECT_DIR$/HaaangryFrontend/Views/Recipes/RecipesView.swift" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HaaangryFrontend/Views/VideoFeedView.swift" beforeDir="false" afterPath="$PROJECT_DIR$/HaaangryFrontend/Views/VideoFeedView.swift" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,21 +42,22 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/xewe/Desktop/HaaangryFrontend&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "/Users/xewe/Desktop/HaaangryFrontend",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -74,10 +74,24 @@
       <option name="presentableId" value="Default" />
       <updated>1761417008128</updated>
       <workItem from="1761417009221" duration="1113000" />
+      <workItem from="1761439237261" duration="603000" />
     </task>
+    <task id="LOCAL-00001" summary="fixing requests">
+      <option name="closed" value="true" />
+      <created>1761438186640</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1761438186640</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="fixing requests" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixing requests" />
   </component>
 </project>

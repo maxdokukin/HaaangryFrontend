@@ -1,3 +1,4 @@
+// Networking/Endpoint.swift
 import Foundation
 
 enum Endpoint {
@@ -10,44 +11,34 @@ enum Endpoint {
     case profile
     case orderHistory
 
-    private static func enc(_ s: String) -> String {
-        let disallowed = CharacterSet(charactersIn: "&+=?/#")
-        let allowed = CharacterSet.urlQueryAllowed.subtracting(disallowed)
-        return s.addingPercentEncoding(withAllowedCharacters: allowed) ?? ""
-    }
-
     var path: String {
         switch self {
-        case .feed:
-            return "/feed"
+        case .feed: return "/feed"
+        case .orderOptions: return "/order/options"
+        case .createOrder: return "/orders"
+        case .llmText: return "/llm/text"
+        case .llmVoice: return "/llm/voice"
+        case .recipes: return "/recipes"
+        case .profile: return "/profile"
+        case .orderHistory: return "/orders/history"
+        }
+    }
+
+    var queryItems: [URLQueryItem]? {
+        switch self {
+        case .feed, .createOrder, .llmText, .llmVoice, .profile, .orderHistory:
+            return nil
 
         case .orderOptions(let id, let title):
-            if let t = title, !t.isEmpty {
-                return "/order/options?video_id=\(id)&title=\(Endpoint.enc(t))"
-            } else {
-                return "/order/options?video_id=\(id)"
-            }
-
-        case .createOrder:
-            return "/orders"
-
-        case .llmText:
-            return "/llm/text"
-
-        case .llmVoice:
-            return "/llm/voice"
+            var items = [URLQueryItem(name: "video_id", value: id)]
+            if let t = title, !t.isEmpty { items.append(URLQueryItem(name: "title", value: t)) }
+            return items
 
         case .recipes(let id, let title, let description):
-            var p = "/recipes?video_id=\(id)"
-            if let t = title, !t.isEmpty { p += "&title=\(Endpoint.enc(t))" }
-            if let d = description, !d.isEmpty { p += "&description=\(Endpoint.enc(d))" }
-            return p
-
-        case .profile:
-            return "/profile"
-
-        case .orderHistory:
-            return "/orders/history"
+            var items = [URLQueryItem(name: "video_id", value: id)]
+            if let t = title, !t.isEmpty { items.append(URLQueryItem(name: "title", value: t)) }
+            if let d = description, !d.isEmpty { items.append(URLQueryItem(name: "description", value: d)) }
+            return items
         }
     }
 

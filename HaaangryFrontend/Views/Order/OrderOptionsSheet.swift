@@ -1,3 +1,4 @@
+// Views/Order/OrderOptionsSheet.swift
 import SwiftUI
 
 struct OrderOptionsSheet: View {
@@ -120,15 +121,5 @@ struct OrderOptionsSheet: View {
 
     private func price(_ cents: Int) -> String {
         String(format: "$%.2f", Double(cents)/100.0)
-    }
-}
-
-// expose recalcTotals for the local button to call without duplicating logic
-private extension OrderStore {
-    func recalcTotals() {
-        let subtotal = currentCart.reduce(0) { $0 + $1.price_cents_snapshot * $1.quantity }
-        let fee = selectedRestaurant?.delivery_fee_cents ?? 299
-        totalCents = subtotal + fee
-        etaMinutes = 30
     }
 }
