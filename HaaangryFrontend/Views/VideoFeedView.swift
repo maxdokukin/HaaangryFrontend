@@ -36,7 +36,7 @@ struct VideoFeedView: View {
                 VerticalPager(
                     count: feed.videos.count,
                     index: $currentIndex,
-                    onSwipeLeft: { i in sheet = .recipes(feed.videos[i]) },
+                    onSwipeLeft:  { i in sheet = .recipes(feed.videos[i]) },
                     onSwipeRight: { i in sheet = .recommendations(feed.videos[i]) }
                 ) { i in
                     VideoCardView(

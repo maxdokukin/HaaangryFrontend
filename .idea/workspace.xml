@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="26f69b67-4412-49df-bd63-a0f8cac8cd3a" name="Changes" comment="added loading animation" />
+    <list default="true" id="26f69b67-4412-49df-bd63-a0f8cac8cd3a" name="Changes" comment="added loading animation hints">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HaaangryFrontend.xcodeproj/project.xcworkspace/xcuserdata/xewe.xcuserdatad/UserInterfaceState.xcuserstate" beforeDir="false" afterPath="$PROJECT_DIR$/HaaangryFrontend.xcodeproj/project.xcworkspace/xcuserdata/xewe.xcuserdatad/UserInterfaceState.xcuserstate" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HaaangryFrontend/Views/VideoFeedView.swift" beforeDir="false" afterPath="$PROJECT_DIR$/HaaangryFrontend/Views/VideoFeedView.swift" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -196,7 +200,15 @@
       <option name="project" value="LOCAL" />
       <updated>1761468113300</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="added loading animation hints">
+      <option name="closed" value="true" />
+      <created>1761468205168</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1761468205168</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -229,6 +241,7 @@
     <MESSAGE value="added rest/menu link on click" />
     <MESSAGE value="upd slogan" />
     <MESSAGE value="added loading animation" />
-    <option name="LAST_COMMIT_MESSAGE" value="added loading animation" />
+    <MESSAGE value="added loading animation hints" />
+    <option name="LAST_COMMIT_MESSAGE" value="added loading animation hints" />
   </component>
 </project>
