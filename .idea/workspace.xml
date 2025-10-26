@@ -4,10 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="26f69b67-4412-49df-bd63-a0f8cac8cd3a" name="Changes" comment="how the fuck did this broke is unclear but now its fixed">
+    <list default="true" id="26f69b67-4412-49df-bd63-a0f8cac8cd3a" name="Changes" comment="welcome to soft dev">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HaaangryFrontend.xcodeproj/project.xcworkspace/xcuserdata/xewe.xcuserdatad/UserInterfaceState.xcuserstate" beforeDir="false" afterPath="$PROJECT_DIR$/HaaangryFrontend.xcodeproj/project.xcworkspace/xcuserdata/xewe.xcuserdatad/UserInterfaceState.xcuserstate" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HaaangryFrontend/Info.plist" beforeDir="false" afterPath="$PROJECT_DIR$/HaaangryFrontend/Info.plist" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -88,7 +86,23 @@
       <option name="project" value="LOCAL" />
       <updated>1761453347426</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="and now somehow putting everything back fucking fixes that again. black fucking magic">
+      <option name="closed" value="true" />
+      <created>1761453994321</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1761453994321</updated>
+    </task>
+    <task id="LOCAL-00004" summary="welcome to soft dev">
+      <option name="closed" value="true" />
+      <created>1761454183940</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1761454183940</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -108,6 +122,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="fixing requests" />
     <MESSAGE value="how the fuck did this broke is unclear but now its fixed" />
-    <option name="LAST_COMMIT_MESSAGE" value="how the fuck did this broke is unclear but now its fixed" />
+    <MESSAGE value="and now somehow putting everything back fucking fixes that again. black fucking magic" />
+    <MESSAGE value="welcome to soft dev" />
+    <option name="LAST_COMMIT_MESSAGE" value="welcome to soft dev" />
   </component>
 </project>

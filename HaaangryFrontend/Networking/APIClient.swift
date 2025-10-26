@@ -19,8 +19,8 @@ final class APIClient {
 
     private let session: URLSession = {
         let c = URLSessionConfiguration.default
-        c.timeoutIntervalForRequest = 5
-        c.timeoutIntervalForResource = 10
+        c.timeoutIntervalForRequest = 30
+        c.timeoutIntervalForResource = 30
         c.waitsForConnectivity = false
         return URLSession(configuration: c)
     }()
