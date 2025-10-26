@@ -90,7 +90,6 @@ struct OrderOptionsSheet: View {
                 // Pricing summary with dynamic subtotal and free-delivery switch
                 let subtotal = orders.currentCart.reduce(0) { $0 + $1.price_cents_snapshot * $1.quantity }
                 let baseFee = orders.selectedRestaurant?.delivery_fee_cents ?? 299
-                let fee = orders.freeDelivery ? 0 : baseFee
 
                 Toggle("Free delivery", isOn: $orders.freeDelivery)
                     .onChange(of: orders.freeDelivery) { _ in orders.recalcTotals() }
@@ -133,20 +132,39 @@ struct OrderOptionsSheet: View {
     }
 
     private func placeOrderAndShowConfirmation() async {
-        if let userId = profile.profile?.user_id {
-            _ = await orders.placeOrder(userId: userId)
-        }
+        guard
+            let userId = profile.profile?.user_id,
+            let r = orders.selectedRestaurant
+        else { return }
 
-        guard let receipt = buildConfirmation() else { return }
+        // Compute totals for persistence and receipt.
+        let subtotal = orders.currentCart.reduce(0) { $0 + $1.price_cents_snapshot * $1.quantity }
+        let fee = orders.freeDelivery ? 0 : r.delivery_fee_cents
+        let total = subtotal + fee
+        let eta = max(r.delivery_eta_min,
+                      min(r.delivery_eta_max,
+                          orders.etaMinutes > 0 ? orders.etaMinutes
+                          : r.delivery_eta_min + (r.delivery_eta_max - r.delivery_eta_min)/2))
 
-        dismiss()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
-            NotificationCenter.default.post(name: .orderConfirmed, object: receipt)
-        }
-    }
+        // Try backend; fall back to local id.
+        let placed = await orders.placeOrder(userId: userId)
+        let orderId = placed?.id ?? OrderConfirmation.code()
 
-    private func buildConfirmation() -> OrderConfirmation? {
-        guard let r = orders.selectedRestaurant else { return nil }
+        // Persist locally.
+        let localOrder = Order(
+            id: orderId,
+            user_id: userId,
+            restaurant_id: r.id,
+            status: "confirmed",
+            items: orders.currentCart,
+            subtotal_cents: subtotal,
+            delivery_fee_cents: fee,
+            total_cents: total,
+            eta_minutes: eta
+        )
+        profile.appendLocal(localOrder)
+
+        // Build and show receipt.
         let lines = orders.currentCart.map {
             OrderConfirmation.Line(
                 name: $0.name_snapshot,
@@ -154,13 +172,8 @@ struct OrderOptionsSheet: View {
                 lineTotalCents: $0.price_cents_snapshot * $0.quantity
             )
         }
-        let subtotal = orders.currentCart.reduce(0) { $0 + $1.price_cents_snapshot * $1.quantity }
-        let fee = orders.freeDelivery ? 0 : r.delivery_fee_cents
-        let total = subtotal + fee
-        let eta = max(r.delivery_eta_min, min(r.delivery_eta_max, orders.etaMinutes > 0 ? orders.etaMinutes : r.delivery_eta_min + (r.delivery_eta_max - r.delivery_eta_min)/2))
-
-        return OrderConfirmation(
-            id: OrderConfirmation.code(),
+        let receipt = OrderConfirmation(
+            id: orderId,
             restaurantName: r.name,
             lines: lines,
             subtotalCents: subtotal,
@@ -168,6 +181,11 @@ struct OrderOptionsSheet: View {
             totalCents: total,
             etaMinutes: eta
         )
+
+        dismiss()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+            NotificationCenter.default.post(name: .orderConfirmed, object: receipt)
+        }
     }
 
     private func price(_ cents: Int) -> String {

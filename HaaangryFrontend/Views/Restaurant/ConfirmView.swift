@@ -7,6 +7,7 @@ struct ConfirmView: View {
     let preselectedItemId: String?
 
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject var profile: ProfileStore
 
     @State private var isSubmitting = false
     @State private var errorText: String?
@@ -165,6 +166,32 @@ struct ConfirmView: View {
         let fee = freeDelivery ? 0 : fallbackDeliveryFee
         let total = subtotal + fee
 
+        // Persist locally as structured Order.
+        if let uid = profile.profile?.user_id {
+            let selectedItems: [OrderItem] = items.compactMap { it in
+                let q = quantities[it.id, default: 0]
+                guard q > 0 else { return nil }
+                return OrderItem(
+                    menu_item_id: it.id,
+                    name_snapshot: it.name,
+                    price_cents_snapshot: it.priceCents,
+                    quantity: q
+                )
+            }
+            let order = Order(
+                id: OrderConfirmation.code(),
+                user_id: uid,
+                restaurant_id: restaurantId,
+                status: "confirmed",
+                items: selectedItems,
+                subtotal_cents: subtotal,
+                delivery_fee_cents: fee,
+                total_cents: total,
+                eta_minutes: 30
+            )
+            profile.appendLocal(order)
+        }
+
         let receipt = OrderConfirmation(
             id: OrderConfirmation.code(),
             restaurantName: restaurantName,
@@ -214,6 +241,7 @@ struct ConfirmView_Previews: PreviewProvider {
                 items: sampleItems,
                 preselectedItemId: sampleItems[0].id
             )
+            .environmentObject(ProfileStore())
         }
     }
 }

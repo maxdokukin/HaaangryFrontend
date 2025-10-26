@@ -21,9 +21,21 @@ final class ProfileStore: ObservableObject {
 
     func load() async {
         self.profile = await APIClient.shared.request(.profile, fallback: .profile)
-        // History not strictly needed in MVP, fine to ignore fallback
-        if let hist: [String: [Order]] = await APIClient.shared.request(.orderHistory, fallback: nil) {
-            self.history = hist["orders"] ?? []
+        // Prefer local history; if empty, fall back to server if available.
+        let local = LocalOrders.load()
+        if local.isEmpty {
+            if let hist: [String: [Order]] = await APIClient.shared.request(.orderHistory, fallback: nil) {
+                self.history = hist["orders"] ?? []
+            } else {
+                self.history = []
+            }
+        } else {
+            self.history = local
         }
+    }
+
+    func appendLocal(_ order: Order) {
+        history.insert(order, at: 0)
+        _ = LocalOrders.append(order)
     }
 }
