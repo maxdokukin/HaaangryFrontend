@@ -4,9 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="26f69b67-4412-49df-bd63-a0f8cac8cd3a" name="Changes" comment="added loading indicator text for articles and yt videos; added intro text delay 5 sec; polished startup layoit">
+    <list default="true" id="26f69b67-4412-49df-bd63-a0f8cac8cd3a" name="Changes" comment="added start into disapp on click">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HaaangryFrontend.xcodeproj/project.pbxproj" beforeDir="false" afterPath="$PROJECT_DIR$/HaaangryFrontend.xcodeproj/project.pbxproj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/HaaangryFrontend.xcodeproj/project.xcworkspace/xcuserdata/xewe.xcuserdatad/UserInterfaceState.xcuserstate" beforeDir="false" afterPath="$PROJECT_DIR$/HaaangryFrontend.xcodeproj/project.xcworkspace/xcuserdata/xewe.xcuserdatad/UserInterfaceState.xcuserstate" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HaaangryFrontend/Overlays/StartupOverlay.swift" beforeDir="false" afterPath="$PROJECT_DIR$/HaaangryFrontend/Overlays/StartupOverlay.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HaaangryFrontend/Views/VideoCardView.swift" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,20 +19,20 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="RESET_MODE" value="HARD" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {}
-}]]></component>
-  <component name="GitHubPullRequestState"><![CDATA[{
-  "prStates": [
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {}
+}</component>
+  <component name="GitHubPullRequestState">{
+  &quot;prStates&quot;: [
     {
-      "id": {
-        "id": "PR_kwDOQI2W_c6vt5nh",
-        "number": 1
+      &quot;id&quot;: {
+        &quot;id&quot;: &quot;PR_kwDOQI2W_c6vt5nh&quot;,
+        &quot;number&quot;: 1
       },
-      "lastSeen": 1761467661477
+      &quot;lastSeen&quot;: 1761470606690
     }
   ]
-}]]></component>
+}</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/maxdokukin/HaaangryFrontend&quot;,
@@ -78,6 +80,7 @@
       <updated>1761417008128</updated>
       <workItem from="1761417009221" duration="1113000" />
       <workItem from="1761439237261" duration="603000" />
+      <workItem from="1761497426619" duration="634000" />
     </task>
     <task id="LOCAL-00001" summary="fixing requests">
       <option name="closed" value="true" />
