@@ -4,9 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="26f69b67-4412-49df-bd63-a0f8cac8cd3a" name="Changes" comment="change wks">
+    <list default="true" id="26f69b67-4412-49df-bd63-a0f8cac8cd3a" name="Changes" comment="RESOLVED MERGE INCONSISTENCIES">
+      <change afterPath="$PROJECT_DIR$/HaaangryFrontend/Utilities/OrderConfirmation.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/HaaangryFrontend/Views/Order/OrderConfirmationSheet.swift" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/HaaangryFrontend.xcodeproj/project.xcworkspace/xcuserdata/xewe.xcuserdatad/UserInterfaceState.xcuserstate" beforeDir="false" afterPath="$PROJECT_DIR$/HaaangryFrontend.xcodeproj/project.xcworkspace/xcuserdata/xewe.xcuserdatad/UserInterfaceState.xcuserstate" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HaaangryFrontend/Views/Order/OrderOptionsSheet.swift" beforeDir="false" afterPath="$PROJECT_DIR$/HaaangryFrontend/Views/Order/OrderOptionsSheet.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HaaangryFrontend/Views/Restaurant/ConfirmView.swift" beforeDir="false" afterPath="$PROJECT_DIR$/HaaangryFrontend/Views/Restaurant/ConfirmView.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HaaangryFrontend/Views/VideoFeedView.swift" beforeDir="false" afterPath="$PROJECT_DIR$/HaaangryFrontend/Views/VideoFeedView.swift" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,7 +32,7 @@
         "id": "PR_kwDOQI2W_c6vt5nh",
         "number": 1
       },
-      "lastSeen": 1761462879533
+      "lastSeen": 1761465755142
     }
   ]
 }]]></component>
@@ -135,7 +140,15 @@
       <option name="project" value="LOCAL" />
       <updated>1761462942262</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="RESOLVED MERGE INCONSISTENCIES">
+      <option name="closed" value="true" />
+      <created>1761465677759</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1761465677759</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -160,6 +173,7 @@
     <MESSAGE value="RECIPES WORK" />
     <MESSAGE value="added recipe youtube links" />
     <MESSAGE value="change wks" />
-    <option name="LAST_COMMIT_MESSAGE" value="change wks" />
+    <MESSAGE value="RESOLVED MERGE INCONSISTENCIES" />
+    <option name="LAST_COMMIT_MESSAGE" value="RESOLVED MERGE INCONSISTENCIES" />
   </component>
 </project>

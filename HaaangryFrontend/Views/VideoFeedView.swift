@@ -5,17 +5,16 @@ import AVFoundation
 private enum SheetRoute: Identifiable {
     case order(Video)
     case recipes(Video)
-    case recommendations(Video)     // ← added
+    case recommendations(Video)
 
     var id: String {
         switch self {
         case .order(let v):           return "order-\(v.id)"
         case .recipes(let v):         return "recipes-\(v.id)"
-        case .recommendations(let v): return "recs-\(v.id)"   // ← added
+        case .recommendations(let v): return "recs-\(v.id)"
         }
     }
 }
-
 
 struct VideoFeedView: View {
     @EnvironmentObject var feed: FeedStore
@@ -25,6 +24,8 @@ struct VideoFeedView: View {
     @State private var sheet: SheetRoute?
     @State private var isMuted: Bool = false
 
+    @State private var confirmation: OrderConfirmation?
+
     @StateObject private var pool = PlayerPool()
 
     var body: some View {
@@ -32,7 +33,7 @@ struct VideoFeedView: View {
             if feed.videos.isEmpty {
                 ProgressView().task { await feed.load() }
             } else {
-                VerticalPager( //now wires to recommendation system instead of directly to order
+                VerticalPager(
                     count: feed.videos.count,
                     index: $currentIndex,
                     onSwipeLeft: { i in sheet = .recipes(feed.videos[i]) },
@@ -62,6 +63,10 @@ struct VideoFeedView: View {
                     .presentationDetents([.large])
             }
         }
+        // Dedicated confirmation sheet, presented after order sheet dismisses.
+        .sheet(item: $confirmation) { c in
+            OrderConfirmationSheet(confirmation: c)
+        }
         .safeAreaInset(edge: .bottom, spacing: 0) {
             BottomActionsBar(isMuted: $isMuted)
                 .padding(.horizontal, 12)
@@ -74,6 +79,11 @@ struct VideoFeedView: View {
         .onAppear {
             preloadAroundCurrent()
             playCurrent()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .orderConfirmed)) { note in
+            if let c = note.object as? OrderConfirmation {
+                confirmation = c
+            }
         }
     }
 
@@ -121,7 +131,6 @@ struct VideoCardView: View {
                     .onTapGesture { togglePlay() }
             }
 
-            // Title and description, capped to 2 lines each, kept above control bar
             VStack {
                 Spacer()
                 HStack(alignment: .bottom) {

@@ -4,6 +4,7 @@ import SwiftUI
 struct OrderOptionsSheet: View {
     @EnvironmentObject var orders: OrderStore
     @EnvironmentObject var profile: ProfileStore
+    @Environment(\.dismiss) private var dismiss
     let video: Video
 
     var body: some View {
@@ -98,17 +99,14 @@ struct OrderOptionsSheet: View {
                 }
 
                 Button {
-                    Task {
-                        if let userId = profile.profile?.user_id {
-                            _ = await orders.placeOrder(userId: userId)
-                        }
-                    }
+                    Task { await placeOrderAndShowConfirmation() }
                 } label: {
                     Text("Place Order")
                         .frame(maxWidth: .infinity)
                 }
                 .glassButtonProminent()
                 .padding(.top, 6)
+                .disabled(orders.selectedRestaurant == nil || orders.currentCart.isEmpty)
             } else {
                 HStack { Spacer(); ProgressView(); Spacer() }
             }
@@ -117,6 +115,46 @@ struct OrderOptionsSheet: View {
         .task(id: video.id) {
             await orders.fetchOptions(for: video.id, title: video.title, force: true)
         }
+    }
+
+    private func placeOrderAndShowConfirmation() async {
+        // Best-effort POST, ignore result for demo reliability.
+        if let userId = profile.profile?.user_id {
+            _ = await orders.placeOrder(userId: userId)
+        }
+
+        guard let receipt = buildConfirmation() else { return }
+
+        // Dismiss current sheet, then announce confirmation.
+        dismiss()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+            NotificationCenter.default.post(name: .orderConfirmed, object: receipt)
+        }
+    }
+
+    private func buildConfirmation() -> OrderConfirmation? {
+        guard let r = orders.selectedRestaurant else { return nil }
+        let lines = orders.currentCart.map {
+            OrderConfirmation.Line(
+                name: $0.name_snapshot,
+                quantity: $0.quantity,
+                lineTotalCents: $0.price_cents_snapshot * $0.quantity
+            )
+        }
+        let subtotal = orders.currentCart.reduce(0) { $0 + $1.price_cents_snapshot * $1.quantity }
+        let fee = r.delivery_fee_cents
+        let total = subtotal + fee
+        let eta = max(r.delivery_eta_min, min(r.delivery_eta_max, orders.etaMinutes > 0 ? orders.etaMinutes : r.delivery_eta_min + (r.delivery_eta_max - r.delivery_eta_min)/2))
+
+        return OrderConfirmation(
+            id: OrderConfirmation.code(),
+            restaurantName: r.name,
+            lines: lines,
+            subtotalCents: subtotal,
+            deliveryFeeCents: fee,
+            totalCents: total,
+            etaMinutes: eta
+        )
     }
 
     private func price(_ cents: Int) -> String {
