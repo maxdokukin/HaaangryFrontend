@@ -47,3 +47,25 @@ public struct APIRestaurantBlock: Codable, Identifiable, Hashable {
 public struct APIRecommendOut: Codable, Hashable {
     public let recommendations: [APIRestaurantBlock]
 }
+
+public struct APIRestaurantBlock: Codable, Identifiable, Hashable {
+    public var id: String { restaurantId }
+
+    public let restaurantId: String
+    public let restaurantName: String
+    public let menuURL: String?  // ADD THIS
+    public let items: [APIMenuItem]
+    public let avgPriceCents: Int
+
+    enum CodingKeys: String, CodingKey {
+        case restaurantId = "restaurant_id"
+        case restaurantName = "restaurant_name"
+        case menuURL = "menu_url"  // ADD THIS
+        case items
+        case avgPriceCents = "avg_price_cents"
+    }
+
+    public var displayAvgPrice: String {
+        String(format: "$%.2f", Double(avgPriceCents) / 100.0)
+    }
+}

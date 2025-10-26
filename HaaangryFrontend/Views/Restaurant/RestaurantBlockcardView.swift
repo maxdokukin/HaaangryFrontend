@@ -102,6 +102,17 @@ struct RestaurantBlockCard_Previews: PreviewProvider {
                     block: APIRestaurantBlock(
                         restaurantId: "r1",
                         restaurantName: "Il Fornaio",
+                        if let menuURL = block.menuURL, let url = URL(string: menuURL) {
+                            Link(destination: url) {
+                                HStack {
+                                    Image(systemName: "link")
+                                    Text("View Full Menu")
+                                }
+                                .font(.subheadline)
+                                .foregroundStyle(.blue)
+                            }
+                            .padding(.top, 8)
+                        }
                         items: [
                             APIMenuItem(id: "r1::tagliatelle-bolognese", restaurantId: "r1", name: "Tagliatelle Bolognese", description: "Traditional ragù", priceCents: 2400, imageURL: nil, tags: ["italian","pasta"]),
                             APIMenuItem(id: "r1::lasagna", restaurantId: "r1", name: "Lasagna Ferrarese", description: nil, priceCents: 2800, imageURL: nil, tags: ["italian"]),
