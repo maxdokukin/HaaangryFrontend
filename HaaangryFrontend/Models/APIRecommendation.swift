@@ -19,26 +19,6 @@ public struct APIMenuItem: Codable, Identifiable, Hashable {
         case tags
     }
 
-    public var displayPrice: String {
-        String(format: "$%.2f", Double(priceCents) / 100.0)
-    }
-}
-
-public struct APIRestaurantBlock: Codable, Identifiable, Hashable {
-    public var id: String { restaurantId }
-
-    public let restaurantId: String
-    public let restaurantName: String
-    public let items: [APIMenuItem]
-    public let avgPriceCents: Int
-
-    enum CodingKeys: String, CodingKey {
-        case restaurantId = "restaurant_id"
-        case restaurantName = "restaurant_name"
-        case items
-        case avgPriceCents = "avg_price_cents"
-    }
-
     public var displayAvgPrice: String {
         String(format: "$%.2f", Double(avgPriceCents) / 100.0)
     }
