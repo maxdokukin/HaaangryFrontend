@@ -126,19 +126,20 @@ extension APIClient {
     }
 
     // Raw-path helper to avoid touching Endpoint definitions.
-    private func requestPath<T: Decodable>(_ path: String, method: String, body: Encodable? = nil, fallback: FixtureFile? = nil) async -> T? {
-        struct _Ep { let path: String; let method: String; let queryItems: [URLQueryItem]? }
-        let ep = _Ep(path: path, method: method, queryItems: nil)
-
-        // Mirror existing request() implementation without relying on Endpoint type.
+    // Raw-path helper to avoid touching Endpoint definitions.
+    private func requestPath<T: Decodable>(
+        _ path: String,
+        method: String,
+        body: Encodable? = nil,
+        fallback: FixtureFile? = nil
+    ) async -> T? {
         do {
             var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: false)
-            components?.path = ep.path
-            components?.queryItems = ep.queryItems
+            components?.path = path
             guard let url = components?.url else { throw URLError(.badURL) }
 
             var urlRequest = URLRequest(url: url)
-            urlRequest.httpMethod = ep.method
+            urlRequest.httpMethod = method
             urlRequest.addValue("application/json", forHTTPHeaderField: "Accept")
             if let body = body {
                 urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
