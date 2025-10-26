@@ -1,17 +1,21 @@
 import SwiftUI
 import AVFoundation
 
+// 1) Add a new route
 private enum SheetRoute: Identifiable {
     case order(Video)
     case recipes(Video)
+    case recommendations(Video)     // ← added
 
     var id: String {
         switch self {
-        case .order(let v):   return "order-\(v.id)"
-        case .recipes(let v): return "recipes-\(v.id)"
+        case .order(let v):           return "order-\(v.id)"
+        case .recipes(let v):         return "recipes-\(v.id)"
+        case .recommendations(let v): return "recs-\(v.id)"   // ← added
         }
     }
 }
+
 
 struct VideoFeedView: View {
     @EnvironmentObject var feed: FeedStore
@@ -28,11 +32,11 @@ struct VideoFeedView: View {
             if feed.videos.isEmpty {
                 ProgressView().task { await feed.load() }
             } else {
-                VerticalPager(
+                VerticalPager( //now wires to recommendation system instead of directly to order
                     count: feed.videos.count,
                     index: $currentIndex,
                     onSwipeLeft: { i in sheet = .recipes(feed.videos[i]) },
-                    onSwipeRight: { i in sheet = .order(feed.videos[i]) }
+                    onSwipeRight: { i in sheet = .recommendations(feed.videos[i]) }
                 ) { i in
                     VideoCardView(
                         video: feed.videos[i],
@@ -48,14 +52,16 @@ struct VideoFeedView: View {
         .sheet(item: $sheet) { route in
             switch route {
             case .order(let v):
-                OrderOptionsSheet(videoId: v.id)
+                OrderOptionsSheet(video: v)
                     .presentationDetents([.medium, .large])
             case .recipes(let v):
-                RecipesView(videoId: v.id)
+                RecipesView(video: v)
                     .presentationDetents([.medium, .large])
+            case .recommendations(let v):
+                RecommendationListView(video: v)
+                    .presentationDetents([.large])
             }
         }
-        // Bottom bar pinned to the bottom-most safe area
         .safeAreaInset(edge: .bottom, spacing: 0) {
             BottomActionsBar(isMuted: $isMuted)
                 .padding(.horizontal, 12)

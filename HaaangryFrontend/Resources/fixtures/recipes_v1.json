@@ -1,9 +1,10 @@
 {
-  "video_id":"v1",
-  "top_text_recipes":[
-    {"title":"Quick Spicy Tonkotsu","steps":["Boil broth","Add aromatics","Cook noodles","Assemble bowl"]},
-    {"title":"Weeknight Ramen Hack","steps":["Stock + tare","Noodles","Chili oil","Toppings"]},
-    {"title":"Rich Pork Ramen","steps":["Broth long simmer","Noodles","Egg","Scallions"]}
-  ],
-  "top_youtube": ["https://youtu.be/ramen1","https://youtu.be/ramen2","https://youtu.be/ramen3"]
+  "video_id": "v1",
+  "query": "Street Ramen — Rich tonkotsu ramen with chili oil and scallions.",
+  "links": [
+    { "title": "Serious Eats: Tonkotsu Ramen Broth", "url": "https://www.seriouseats.com/tonkotsu-ramen-broth-recipe" },
+    { "title": "Just One Cookbook: Tonkotsu Ramen", "url": "https://www.justonecookbook.com/tonkotsu-ramen/" },
+    { "title": "No Recipes: Spicy Tonkotsu Ramen", "url": "https://norecipes.com/spicy-tonkotsu-ramen/" },
+    { "title": "The Woks of Life: Chili Oil", "url": "https://thewoksoflife.com/chili-oil/" }
+  ]
 }

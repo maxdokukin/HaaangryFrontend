@@ -1,13 +1,14 @@
+// Views/Order/OrderOptionsSheet.swift
 import SwiftUI
 
 struct OrderOptionsSheet: View {
     @EnvironmentObject var orders: OrderStore
     @EnvironmentObject var profile: ProfileStore
-    let videoId: String
+    let video: Video
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            if let opts = orders.orderOptions, opts.video_id == videoId {
+            if let opts = orders.orderOptions, opts.video_id == video.id {
                 Text("You’re craving: \(opts.intent)")
                     .font(.title3)
                     .bold()
@@ -109,27 +110,16 @@ struct OrderOptionsSheet: View {
                 .glassButtonProminent()
                 .padding(.top, 6)
             } else {
-                // Loading state while fetch runs
                 HStack { Spacer(); ProgressView(); Spacer() }
             }
         }
         .padding()
-        .task(id: videoId) {
-            await orders.fetchOptions(for: videoId, force: true)
+        .task(id: video.id) {
+            await orders.fetchOptions(for: video.id, title: video.title, force: true)
         }
     }
 
     private func price(_ cents: Int) -> String {
         String(format: "$%.2f", Double(cents)/100.0)
-    }
-}
-
-// expose recalcTotals for the local button to call without duplicating logic
-private extension OrderStore {
-    func recalcTotals() {
-        let subtotal = currentCart.reduce(0) { $0 + $1.price_cents_snapshot * $1.quantity }
-        let fee = selectedRestaurant?.delivery_fee_cents ?? 299
-        totalCents = subtotal + fee
-        etaMinutes = 30
     }
 }

@@ -1,13 +1,14 @@
+// Models/RecipeModels.swift
 import Foundation
 
-struct TextRecipe: Codable, Identifiable, Equatable {
-    var id: String { title }
+struct RecipeLink: Codable, Identifiable, Equatable {
+    var id: String { url }
     let title: String
-    let steps: [String]
+    let url: String
 }
 
-struct RecipeResult: Codable {
+struct RecipeLinksResult: Codable {
     let video_id: String
-    let top_text_recipes: [TextRecipe]
-    let top_youtube: [String]
+    let query: String
+    let links: [RecipeLink]
 }
