@@ -4,12 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="26f69b67-4412-49df-bd63-a0f8cac8cd3a" name="Changes" comment="added recipe youtube links">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HaaangryFrontend.xcodeproj/project.xcworkspace/xcuserdata/xewe.xcuserdatad/UserInterfaceState.xcuserstate" beforeDir="false" afterPath="$PROJECT_DIR$/HaaangryFrontend.xcodeproj/project.xcworkspace/xcuserdata/xewe.xcuserdatad/UserInterfaceState.xcuserstate" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HaaangryFrontend/Models/RecipeModels.swift" beforeDir="false" afterPath="$PROJECT_DIR$/HaaangryFrontend/Models/RecipeModels.swift" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HaaangryFrontend/Views/Recipes/RecipesView.swift" beforeDir="false" afterPath="$PROJECT_DIR$/HaaangryFrontend/Views/Recipes/RecipesView.swift" afterDir="false" />
-    </list>
+    <list default="true" id="26f69b67-4412-49df-bd63-a0f8cac8cd3a" name="Changes" comment="added recipe youtube links" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -19,12 +14,20 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="RESET_MODE" value="HARD" />
   </component>
-  <component name="GitHubPullRequestSearchHistory">{
-  &quot;lastFilter&quot;: {
-    &quot;state&quot;: &quot;OPEN&quot;,
-    &quot;assignee&quot;: &quot;maxdokukin&quot;
-  }
-}</component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {}
+}]]></component>
+  <component name="GitHubPullRequestState"><![CDATA[{
+  "prStates": [
+    {
+      "id": {
+        "id": "PR_kwDOQI2W_c6vt5nh",
+        "number": 1
+      },
+      "lastSeen": 1761462879533
+    }
+  ]
+}]]></component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/maxdokukin/HaaangryFrontend&quot;,
